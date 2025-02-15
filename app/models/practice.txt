@@ -1,0 +1,45 @@
+import spacy
+from spacy.matcher import Matcher
+
+
+# nlp object made from small english language web pack
+nlp = spacy.load('en_core_web_sm')
+matcher = Matcher(nlp.vocab)
+
+doc = nlp("I like tree kangaroos and narwhals.")
+
+tokens = doc
+print(tokens.text)
+
+tree_kangaroos = doc[2:4]
+print('tree_kangaroos:', tree_kangaroos.text)
+
+tree_kangaroos_and_narwhals = doc[2:6]
+print('tree_kangaroos_and_narwhals:', tree_kangaroos_and_narwhals.text)
+
+doc = nlp(
+    "In 1990, more than 60% of people in East Asia were in extreme poverty. "
+    "Now less than 4% are."
+)
+
+pattern = [
+    {"TEXT": "people"},  # Match "people"
+    {"IS_ALPHA": True, "OP": "*"},  # Allow any words in between
+    {"TEXT": "poverty"}  # Match "East"
+]
+matcher.add("TEST_PATTERN", [pattern])
+matches = matcher(doc)
+
+for match_id, start, end in matches:
+    print('matched:', doc[start:end].text)
+
+for token in doc:
+    # Check if the token resembles a number
+    print('Part of Speech', token.text, token.pos_, token.dep_, token.head.text)
+    # print('token is alpha:', token, token.is_alpha)
+    # print('token is puntuation:', token, token.is_punct)
+    # print('token is number',token, token.like_num)
+
+print('\nentities\n')
+for ent in doc.ents:
+    print(ent.text, ent.label_)
