@@ -5,7 +5,7 @@ import random
 class Model:
     def __init__(self):
         self.nlp = spacy.load("en_core_web_sm")
-        self.matcher = Matcher(nlp.vocab)
+        self.matcher = Matcher(self.nlp.vocab)
         self.patterns = {
             "greeting": [[{"LOWER": "hello"}], [{"LOWER": "hi"}], [{"LOWER": "hey"}], [{"LOWER": "good"}, {"LOWER": "morning"}]],
             "goodbye": [[{"LOWER": "bye"}], [{"LOWER": "goodbye"}], [{"LOWER": "see"}, {"LOWER": "you"}]],
