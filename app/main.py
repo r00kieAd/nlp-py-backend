@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from models import static_spacy
+from models import static_spacy, trained_spacy
 
 class App:
     def __init__(self):
@@ -12,14 +12,17 @@ class App:
         def home():
             return jsonify({"msg": "Flask app initialized!"})
 
-        @self.app.route('/reply', methods=['POST'])
-        def get_reply():
+        @self.app.route('/static_reply', methods=['POST'])
+        def get_static_reply():
             req_data = request.get_json()
             if not req_data or "input" not in req_data:
                 return jsonify({"error": "Missing 'input' parameter"}), 400
             msg = req_data["input"]
             response = self.static_model.static_response(msg)
             return jsonify({"reply": response})
+        
+        def get_dynamic_reply():
+            pass
 
     def run(self):
         self.app.run(debug=True)

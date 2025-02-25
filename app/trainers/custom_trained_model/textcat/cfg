@@ -1,0 +1,9 @@
+{
+  "labels":[
+    "greeting",
+    "goodbye",
+    "thanks"
+  ],
+  "threshold":0.0,
+  "positive_label":null
+}
