@@ -1,12 +1,3 @@
-'''
-How This Works
-1.	Train a classifier using TextCategorizer in spaCy.
-2.	Assign intent labels (greeting, goodbye, thanks) to phrases.
-3.	Train the model using the given dataset.
-4.	Predict intent based on user input.
-5.	Generate dynamic responses based on intent.
-'''
-
 import spacy, random, os
 
 class Dynamic_Model:
