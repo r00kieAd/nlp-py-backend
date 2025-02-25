@@ -1,0 +1,58 @@
+{
+    "intents": [
+        {
+            "intent": "greeting",
+            "examples": [
+                "hello",
+                "how-do-you-do",
+                "hullo",
+                "howdy"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "hi",
+                "hello",
+                "HI",
+                "hullo",
+                "howdy"
+            ]
+        },
+        {
+            "intent": "goodbye",
+            "examples": [
+                "bye",
+                "bye",
+                "adieu",
+                "au revoir",
+                "goodby"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "thank you",
+                "give thanks you",
+                "thank you"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "how are you",
+                "how be you",
+                "how follow you",
+                "how exist you",
+                "how comprise you"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "what's up",
+                "what's up"
+            ]
+        }
+    ]
+}

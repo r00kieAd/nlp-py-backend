@@ -10,36 +10,33 @@ How This Works
 import spacy
 import random
 
-# Load trained model
-nlp = spacy.load("chatbot_model")
+class Dynamic_Model:
+    def __init__(self):
+        self.nlp = spacy.load("trainers/custom_trained_model")
+        self.responses = {
+            "greeting": ["Hello!", "Hi there!", "Hey! How can I help?"],
+            "goodbye": ["Goodbye!", "See you later!", "Take care!"],
+            "thanks": ["You're welcome!", "No problem!", "Anytime!"],
+            "unknown": ["Sorry, I didn't understand that.", "Can you rephrase?"]
+        }
 
-# Possible responses
-responses = {
-    "greeting": ["Hello!", "Hi there!", "Hey! How can I help?"],
-    "goodbye": ["Goodbye!", "See you later!", "Take care!"],
-    "thanks": ["You're welcome!", "No problem!", "Anytime!"],
-    "unknown": ["Sorry, I didn't understand that.", "Can you rephrase?"]
-}
+    def predict_intent(self, text):
+        doc = self.nlp(text)
+        scores = doc.cats  # Intent scores
+        best_intent = max(scores, key=scores.get)  # Highest probability intent
+        return best_intent if scores[best_intent] > 0.6 else "unknown"
 
-# Function to predict intent
-def predict_intent(text):
-    doc = nlp(text)
-    scores = doc.cats  # Get intent probabilities
-    best_intent = max(scores, key=scores.get)  # Pick highest probability intent
-    
-    if scores[best_intent] > 0.6:  # Confidence threshold
-        return best_intent
-    return "unknown"
+    def dynamic_response(self, user_input):
+        intent = self.predict_intent(user_input)
+        return random.choice(self.responses.get(intent, self.responses["unknown"]))
 
-# Chatbot response function
-def chatbot_response(user_input):
-    intent = predict_intent(user_input)
-    return random.choice(responses.get(intent, responses["unknown"]))
+    def run_model(self):
+        while True:
+            user_input = input("You: ")
+            if user_input.lower() in ["exit", "quit"]:
+                print("Chatbot: Goodbye!")
+                break
+            print("Chatbot:", self.dynamic_response(user_input))
 
-# Chatbot interaction
-while True:
-    user_input = input("You: ")
-    if user_input.lower() in ["exit", "quit"]:
-        print("Chatbot: Goodbye!")
-        break
-    print("Chatbot:", chatbot_response(user_input))
+obj = Dynamic_Model()
+obj.run_model()

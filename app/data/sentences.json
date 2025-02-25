@@ -1,0 +1,32 @@
+{
+    "sentences": {
+        "hello": [
+            "hullo",
+            "hello",
+            "hi"
+        ],
+        "hi": [
+            "Hawaii",
+            "Aloha State",
+            "hello",
+            "how-do-you-do"
+        ],
+        "bye": [
+            "so long",
+            "auf wiedersehen",
+            "good-bye",
+            "cheerio"
+        ],
+        "thank you": [
+            "thank you"
+        ],
+        "how are you": [
+            "how personify you",
+            "how be you"
+        ],
+        "what's up": [
+            "what's upwards",
+            "what's up"
+        ]
+    }
+}
