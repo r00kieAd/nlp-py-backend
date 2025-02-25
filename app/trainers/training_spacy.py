@@ -1,6 +1,6 @@
 import spacy, os, json
 from spacy.pipeline.textcat import Config, single_label_cnn_config
-
+print('')
 json_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'intents.json')
 INTENT_KEY = "category"
 
