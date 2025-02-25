@@ -2,7 +2,8 @@
   "labels":[
     "greeting",
     "goodbye",
-    "thanks"
+    "gratitude",
+    "small_talk"
   ],
   "threshold":0.0,
   "positive_label":null

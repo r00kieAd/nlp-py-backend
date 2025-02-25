@@ -20,7 +20,8 @@
     "textcat":[
       "greeting",
       "goodbye",
-      "thanks"
+      "gratitude",
+      "small_talk"
     ]
   },
   "pipeline":[

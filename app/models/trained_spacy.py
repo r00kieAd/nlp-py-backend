@@ -7,12 +7,12 @@ How This Works
 5.	Generate dynamic responses based on intent.
 '''
 
-import spacy
-import random
+import spacy, random, os
 
 class Dynamic_Model:
     def __init__(self):
-        self.nlp = spacy.load("trainers/custom_trained_model")
+        self.trained_model_path = os.path.join(os.path.dirname(__file__), '..', 'trainers', 'custom_trained_model')
+        self.nlp = spacy.load(self.trained_model_path)
         self.responses = {
             "greeting": ["Hello!", "Hi there!", "Hey! How can I help?"],
             "goodbye": ["Goodbye!", "See you later!", "Take care!"],
