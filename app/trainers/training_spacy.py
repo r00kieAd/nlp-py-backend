@@ -31,7 +31,7 @@ def train_model(nlp, train_data, n_iter=10):
             nlp.update([example], losses=losses, sgd=optimizer)
         print(f"Loss: {losses['textcat']}")
 
-print("training start")
+print("training started")
 train_model(nlp, train_data)
 nlp.to_disk(trained_model_path)
 print("Model saved to 'custom_trained_model'")

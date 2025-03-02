@@ -28,9 +28,9 @@ class Static_Model:
         matches = self.matcher(doc)
         
         if matches:
-            match_id, start, end = matches[0]  # Get first match
+            match_id, start, end = matches[0]
             print(match_id, start, end)
-            intent = self.nlp.vocab.strings[match_id]  # Convert match ID to string
+            intent = self.nlp.vocab.strings[match_id]
             print(intent)
-            return random.choice(self.responses[intent])  # Random response for matched intent
-        return random.choice(self.responses["unknown"])  # Default response
+            return random.choice(self.responses[intent])
+        return random.choice(self.responses["unknown"])
