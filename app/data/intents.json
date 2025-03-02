@@ -5,28 +5,30 @@
             "examples": [
                 "hello",
                 "how-do-you-do",
-                "hullo",
-                "howdy"
+                "hi",
+                "hullo"
             ]
         },
         {
             "intent": "greeting",
             "examples": [
                 "hi",
-                "hello",
+                "Aloha State",
+                "Hawaii",
                 "HI",
                 "hullo",
-                "howdy"
+                "hello"
             ]
         },
         {
             "intent": "goodbye",
             "examples": [
                 "bye",
+                "arrivederci",
+                "goodbye",
                 "bye",
-                "adieu",
-                "au revoir",
-                "goodby"
+                "auf wiedersehen",
+                "so long"
             ]
         },
         {
@@ -41,17 +43,16 @@
             "intent": "small_talk",
             "examples": [
                 "how are you",
-                "how be you",
-                "how follow you",
-                "how exist you",
-                "how comprise you"
+                "how equal you",
+                "how be you"
             ]
         },
         {
             "intent": "small_talk",
             "examples": [
                 "what's up",
-                "what's up"
+                "what's up",
+                "what's upward"
             ]
         }
     ]
