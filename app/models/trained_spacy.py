@@ -54,7 +54,6 @@ class Dynamic_Model:
         return best_intent if scores[best_intent] > 0.6 else "unknown"
 
     def dynamic_response(self, user_input):
-        """Return a response and dynamically expand responses if needed."""
         intent = self.predict_intent(user_input)
         self.expand_responses(intent)
         return random.choice(self.responses.get(intent, self.responses["unknown"]))

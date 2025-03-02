@@ -28,11 +28,9 @@ class SynonymsGeneration:
         return list(sentence_variations)
 
     def generate(self):
-        # Generating synonyms, structuring them with intents, and saving to JSON.
         with open(self.json_path, 'r') as file:
             data = json.load(file)
 
-        # need to define more intents
         intent_mapping = {
             "hello": "greeting",
             "hi": "greeting",
@@ -56,6 +54,5 @@ class SynonymsGeneration:
 
         print("Updated JSON saved successfully!")
 
-# Run process
 process = SynonymsGeneration()
 process.generate()
