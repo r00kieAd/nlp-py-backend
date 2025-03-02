@@ -20,7 +20,6 @@ for intents in data["intents"]:
         item = (example, {INTENT_KEY: {intents["intent"]: 1.0}})
         train_data.append(item)
 
-# Training function
 def train_model(nlp, train_data, n_iter=10):
     optimizer = nlp.begin_training()
     for _ in range(n_iter):
@@ -32,7 +31,6 @@ def train_model(nlp, train_data, n_iter=10):
             nlp.update([example], losses=losses, sgd=optimizer)
         print(f"Loss: {losses['textcat']}")
 
-# Train and save the model
 print("training start")
 train_model(nlp, train_data)
 nlp.to_disk(trained_model_path)
