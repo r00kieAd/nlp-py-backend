@@ -1,8 +1,4 @@
 import spacy, random, os, json
-from nltk.corpus import wordnet
-import nltk
-
-nltk.download('wordnet')
 
 class Dynamic_Model:
     def __init__(self):
@@ -29,24 +25,6 @@ class Dynamic_Model:
         with open(self.json_path, 'w') as file:
             json.dump(data, file, indent=4)
 
-    def expand_responses(self, intent):
-        if intent not in self.responses:
-            return
-
-        expanded_responses = set(self.responses[intent])
-
-        for response in self.responses[intent]:
-            words = response.split()
-            new_sentence = []
-            for word in words:
-                synonyms = [lemma.name().replace("_", " ") for syn in wordnet.synsets(word) for lemma in syn.lemmas()]
-                new_word = random.choice(synonyms) if synonyms else word
-                new_sentence.append(new_word)
-            expanded_responses.add(" ".join(new_sentence))
-
-        self.responses[intent] = list(expanded_responses)
-        self.save_responses(self.responses)
-
     def predict_intent(self, text):
         doc = self.nlp(text)
         scores = doc.cats
@@ -55,6 +33,5 @@ class Dynamic_Model:
 
     def dynamic_response(self, user_input):
         intent = self.predict_intent(user_input)
-        self.expand_responses(intent)
         return random.choice(self.responses.get(intent, self.responses["unknown"]))
 

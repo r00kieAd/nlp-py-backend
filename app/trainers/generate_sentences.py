@@ -1,7 +1,7 @@
 import nltk, random, json, os
 from nltk.corpus import wordnet
 
-class SynonymsGeneration:
+class Sentence_Generation:
 
     def __init__(self):
         self.json_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'sentences.json')
@@ -54,5 +54,5 @@ class SynonymsGeneration:
 
         print("Updated JSON saved successfully!")
 
-process = SynonymsGeneration()
+process = Sentence_Generation()
 process.generate()
