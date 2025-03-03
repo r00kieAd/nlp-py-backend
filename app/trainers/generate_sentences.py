@@ -52,5 +52,5 @@ class Sentence_Generation:
 
         logging.info("Updated JSON saved successfully!")
 
-process = Sentence_Generation()
-process.generate()
+# process = Sentence_Generation()
+# process.generate()

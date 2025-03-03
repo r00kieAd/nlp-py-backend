@@ -2,7 +2,7 @@ import spacy, random, os, json
 
 class Dynamic_Model:
     def __init__(self):
-        self.trained_model_path = os.path.join(os.path.dirname(__file__), '..', 'trainers', 'custom_trained_model')
+        self.trained_model_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'custom_trained_model')
         self.json_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'responses.json')
         self.nlp = spacy.load(self.trained_model_path)
         self.responses = self.load_responses()
