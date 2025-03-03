@@ -50,7 +50,7 @@ class Response_Generation():
                     synonyms = [lemma.name().replace("_", " ") for syn in wordnet.synsets(word) for lemma in syn.lemmas()]
                     new_word = random.choice(synonyms) if synonyms else word
                     new_sentence.append(new_word)
-                logging.info(f'new sentence generated for {intent}: {new_sentence}')
+                logging.info(f'new sentence generated for {curr}: {new_sentence}')
                 expanded_responses.add(" ".join(new_sentence))
 
             self.responses[curr] = list(expanded_responses)
