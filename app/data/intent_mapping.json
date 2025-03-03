@@ -1,0 +1,22 @@
+{
+    "intents": [
+        {
+            "hello": "greeting"
+        },
+        {
+            "hi": "greeting"
+        },
+        {
+            "bye": "goodbye"
+        },
+        {
+            "thank you": "gratitude"
+        },
+        {
+            "how are you": "small_talk"
+        },
+        {
+            "what's up": "small_talk"
+        }
+    ]
+}

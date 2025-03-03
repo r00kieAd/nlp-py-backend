@@ -1,16 +1,18 @@
-import nltk, random, json, os
+import nltk, random, json, os, logging
 from nltk.corpus import wordnet
+
+nltk.download('wordnet')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 class Sentence_Generation:
 
     def __init__(self):
-        self.json_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'sentences.json')
-        self.json_path_2 = os.path.join(os.path.dirname(__file__), '..', 'data', 'intents.json')
+        self.sentences_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'sentences.json')
+        self.intent_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'intents.json')
+        self.intent_map = os.path.join(os.path.dirname(__file__), '..', 'data', 'intent_mapping.json')
         self.expanded_data = {"intents": []}
 
     def synonyms(self, sentence, num_variations=5):
-        """Generate multiple variations of a sentence using synonyms."""
-        nltk.download('wordnet')
         words = sentence.split()
         sentence_variations = set()
 
@@ -28,31 +30,27 @@ class Sentence_Generation:
         return list(sentence_variations)
 
     def generate(self):
-        with open(self.json_path, 'r') as file:
+        logging.info('loading sentences...')
+        with open(self.sentences_path, 'r') as file:
             data = json.load(file)
+        logging.info('loaded sentences, loading mapped intents...')
+        with open(self.intent_map, 'r') as file:
+            mapped_data = json.load(file)
+        logging.info(f'loaded mapped intents, starting synonyms generation process for new intent examples...')
+        for intent_mapping in mapped_data['intents']:
 
-        intent_mapping = {
-            "hello": "greeting",
-            "hi": "greeting",
-            "bye": "goodbye",
-            "thank you": "gratitude",
-            "how are you": "small_talk",
-            "what's up": "small_talk"
-        }
+            for sentence in data["sentences"]:
+                intent = intent_mapping.get(sentence, "unknown")
+                variations = self.synonyms(sentence, 5)
+                self.expanded_data["intents"].append({
+                    "intent": intent,
+                    "examples": [sentence] + variations
+                })
 
-        for sentence in data["sentences"]:
-            intent = intent_mapping.get(sentence, "unknown")
-            variations = self.synonyms(sentence, 5)
-
-            self.expanded_data["intents"].append({
-                "intent": intent,
-                "examples": [sentence] + variations
-            })
-
-        with open(self.json_path_2, 'w') as file:
+        with open(self.intent_path, 'w') as file:
             json.dump(self.expanded_data, file, indent=4)
 
-        print("Updated JSON saved successfully!")
+        logging.info("Updated JSON saved successfully!")
 
 process = Sentence_Generation()
 process.generate()
