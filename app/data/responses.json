@@ -1,13 +1,32 @@
 {
     "greeting": [
         "Hi there!",
+        "recognize",
+        "greeting",
+        "strange",
+        "Hello!",
+        "adios",
+        "greet",
+        "thanks",
+        "so long",
+        "bye-bye",
+        "thank",
+        "give thanks",
         "Howdy!",
-        "Hello!"
+        "goodby",
+        "unknown"
     ],
     "goodbye": [
+        "recognize",
+        "good-bye",
         "Goodbye!",
+        "bye",
+        "stranger",
+        "greet",
+        "thanks",
         "See you later!",
-        "Take care!"
+        "Take care!",
+        "unknown"
     ],
     "thanks": [
         "You're welcome!",
@@ -15,8 +34,43 @@
         "Anytime!"
     ],
     "unknown": [
+        "recognize",
+        "good-bye",
+        "adieu",
+        "salutation",
+        "unknown region",
+        "adios",
+        "thank",
+        "arrivederci",
+        "give thanks",
+        "goodby",
+        "cheerio",
         "Sorry, iodin didn't pull in that.",
+        "unidentified",
+        "bye-bye",
+        "unsung",
         "Sorry, I didn't venture that.",
-        "Can you rephrase?"
+        "goodbye",
+        "good-by",
+        "unknown",
+        "sayonara",
+        "alien",
+        "good day",
+        "strange",
+        "stranger",
+        "auf wiedersehen",
+        "so long",
+        "thanks",
+        "terra incognita",
+        "unnamed",
+        "greeting",
+        "bye",
+        "greet",
+        "nameless",
+        "Can you rephrase?",
+        "obscure",
+        "recognise",
+        "au revoir",
+        "unknown quantity"
     ]
 }
