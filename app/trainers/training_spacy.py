@@ -22,7 +22,7 @@ class Training_Spacy():
     def gen_responses(self):
         self.response_generation.expand_responses()
 
-    def load_data():
+    def load_data(self):
         logging.info('loading intent data...')
         with open(self.intents_path, 'r') as file:
             data = json.load(file)
@@ -31,12 +31,12 @@ class Training_Spacy():
         for intents in data["intents"]:
             self.textcat.add_label(intents["intent"])
             for example in intents["examples"]:
-                item = (example, {INTENT_KEY: {intents["intent"]: 1.0}})
+                item = (example, {self.INTENT_KEY: {intents["intent"]: 1.0}})
                 train_data.append(item)
         logging.info('data loaded...')
         return train_data
 
-    def train_model(n_iter=10):
+    def train_model(self, n_iter=10):
         train_data = self.load_data()
         logging.info("training started...")
         try:
@@ -51,7 +51,9 @@ class Training_Spacy():
                     example = spacy.training.Example.from_dict(doc, annotations)
                     self.nlp.update([example], losses=losses, sgd=optimizer)
                 logging.info(f"Loss: {losses['textcat']}")
-            self.nlp.to_disk(trained_model_path)
-        except Exception:
-            logging.info(Exception.__name__)
+            self.nlp.to_disk(self.trained_model_path)
+            return {"status": "success"}
+        except Exception as e:
+            logging.info(str(repr(e)))
+            return {"status": "failed", "error": "Error while training the custom model, see logs..."}
 

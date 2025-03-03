@@ -8,7 +8,6 @@ class Response_Generation():
         self.intent_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'intents.json')
         self.resp_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'responses.json')
         self.responses = self.load_responses()
-        print(self.responses)
 
     def load_responses(self):
         if os.path.exists(self.resp_path):

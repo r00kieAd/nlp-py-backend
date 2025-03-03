@@ -46,10 +46,9 @@ class App:
         @self.app.route('/train_spacy', methods=['GET'])
         def train_spacy_function():
             try:
-                self.train_spacy.train_model()
-                return jsonify({"status": "success"})
-            except Exception:
-                return jsonify({"status": "failed", "error": Exception.__name__})
+                return jsonify(self.train_spacy.train_model())
+            except Exception as e:
+                return jsonify({"status": "failed", "error": str(repr(e))})
 
 
     def run(self):

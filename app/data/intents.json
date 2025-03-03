@@ -5,49 +5,337 @@
             "examples": [
                 "hello",
                 "how-do-you-do",
+                "hullo",
                 "hi",
-                "hullo"
+                "howdy"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "hi",
+                "Hawaii",
+                "hullo",
+                "HI",
+                "howdy"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "bye",
+                "au revoir",
+                "bye-bye",
+                "goodby",
+                "arrivederci"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "thank you",
+                "thank you",
+                "give thanks you"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "how are you",
+                "how make up you",
+                "how exist you",
+                "how live you",
+                "how cost you",
+                "how are you"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what's up",
+                "what's upwards",
+                "what's upwardly",
+                "what's astir",
+                "what's up"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "hello",
+                "hello",
+                "howdy"
             ]
         },
         {
             "intent": "greeting",
             "examples": [
                 "hi",
-                "Aloha State",
-                "Hawaii",
-                "HI",
+                "how-do-you-do",
                 "hullo",
+                "Hawai'i",
                 "hello"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "bye",
+                "bye",
+                "auf wiedersehen"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "thank you",
+                "thank you",
+                "give thanks you"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "how are you",
+                "how follow you",
+                "how be you"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what's up",
+                "what's up",
+                "what's astir",
+                "what's upwardly"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "hello",
+                "hello",
+                "hullo",
+                "hi"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "hi",
+                "hullo",
+                "Hawaii",
+                "howdy",
+                "Hawai'i",
+                "hi"
             ]
         },
         {
             "intent": "goodbye",
             "examples": [
                 "bye",
-                "arrivederci",
-                "goodbye",
+                "pass",
+                "bye-bye",
                 "bye",
-                "auf wiedersehen",
-                "so long"
+                "goodby"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "thank you",
+                "thank you",
+                "give thanks you"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "how are you",
+                "how exist you",
+                "how embody you",
+                "how be you",
+                "how comprise you",
+                "how are you"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what's up",
+                "what's upward",
+                "what's up"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "hello",
+                "hello",
+                "hullo",
+                "how-do-you-do",
+                "howdy"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "hi",
+                "hullo",
+                "Hawaii",
+                "how-do-you-do",
+                "Aloha State",
+                "Hawai'i"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "bye",
+                "adieu",
+                "good day",
+                "so long",
+                "adios",
+                "good-by"
             ]
         },
         {
             "intent": "gratitude",
             "examples": [
                 "thank you",
-                "give thanks you",
-                "thank you"
+                "thank you",
+                "give thanks you"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "how are you",
+                "how be you",
+                "how embody you",
+                "how exist you"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what's up",
+                "what's upward",
+                "what's upwardly",
+                "what's up"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "hello",
+                "how-do-you-do",
+                "hullo",
+                "hi",
+                "howdy"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "hi",
+                "HI",
+                "hullo",
+                "Aloha State",
+                "howdy"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "bye",
+                "pass",
+                "good-bye",
+                "sayonara",
+                "good-by"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "thank you",
+                "thank you",
+                "give thanks you"
             ]
         },
         {
             "intent": "small_talk",
             "examples": [
                 "how are you",
-                "how equal you",
                 "how be you",
+                "how live you",
+                "how ar you"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
                 "what's up",
+                "what's improving",
+                "what's astir",
+                "what's up"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "hello",
+                "hello",
+                "hullo",
+                "hi",
+                "howdy"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "hi",
+                "how-do-you-do",
+                "HI",
+                "howdy",
+                "Hawai'i",
+                "hi"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "bye",
+                "sayonara",
+                "adieu",
+                "bye",
+                "goodbye",
+                "good-by"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "thank you",
+                "thank you",
+                "give thanks you"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "how are you",
+                "how follow you",
+                "how be you",
+                "how embody you",
+                "how exist you"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
                 "what's up",
-                "what's upward"
+                "what's up"
             ]
         }
     ]
