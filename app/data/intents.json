@@ -44,12 +44,7 @@
             "examples": [
                 "how are you",
                 "how equal you",
-                "how be you"
-            ]
-        },
-        {
-            "intent": "small_talk",
-            "examples": [
+                "how be you",
                 "what's up",
                 "what's up",
                 "what's upward"
