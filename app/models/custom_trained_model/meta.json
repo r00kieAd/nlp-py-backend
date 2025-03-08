@@ -19,10 +19,10 @@
   "labels":{
     "textcat":[
       "greeting",
+      "small_talk",
       "unknown",
       "goodbye",
-      "gratitude",
-      "small_talk"
+      "gratitude"
     ]
   },
   "pipeline":[

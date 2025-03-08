@@ -1,333 +1,948 @@
 {
     "intents": [
         {
-            "intent": "unknown",
-            "examples": [
-                "how are you",
-                "how represent you",
-                "how be you"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "bye",
-                "sayonara",
-                "good day",
-                "good-by",
-                "bye-bye"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "what's up",
-                "what's astir",
-                "what's upward",
-                "what's up"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "thank you",
-                "give thanks you",
-                "thank you"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "hi",
-                "hello",
-                "hi",
-                "HI",
-                "howdy"
-            ]
-        },
-        {
             "intent": "greeting",
             "examples": [
                 "hello",
-                "hello",
-                "hullo",
                 "hi",
-                "howdy"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "how are you",
-                "how live you",
-                "how be you"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "bye",
-                "so long",
-                "good-bye",
-                "goodbye",
-                "good day"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "what's up",
-                "what's astir",
-                "what's up"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "thank you",
-                "give thanks you",
-                "thank you"
+                "how-do-you-do",
+                "hullo"
             ]
         },
         {
             "intent": "greeting",
             "examples": [
                 "hi",
-                "hello",
                 "hullo",
-                "Aloha State",
+                "hullo",
+                "hello"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "hey there",
+                "hey thither",
+                "hey thither",
+                "hey thither"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "howdy",
+                "hello",
+                "hello",
                 "hi"
             ]
         },
         {
-            "intent": "unknown",
+            "intent": "greeting",
             "examples": [
-                "hello",
-                "hi",
-                "hullo",
-                "howdy"
+                "good morning",
+                "ripe cockcrow",
+                "sound dawning",
+                "sound aurora"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "good afternoon",
+                "sound afternoon",
+                "ripe afternoon",
+                "sound afternoon"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "good evening",
+                "ripe eve",
+                "sound eve",
+                "ripe eventide"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "how are you",
+                "how ar you",
+                "how follow you",
+                "how represent you"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "how have you been",
+                "how receive you represent",
+                "how experience you represent",
+                "how feature you follow"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "what's up",
+                "what's upwards",
+                "what's upward",
+                "what's upwards"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "what's new",
+                "what's newfangled",
+                "what's novel",
+                "what's young"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "how's it going",
+                "how's it survive",
+                "how's it extend",
+                "how's it fit"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "how do you do",
+                "how suffice you exercise",
+                "how suffice you suffice",
+                "how exercise you practice"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "long time no see",
+                "prospicient meter nobelium view",
+                "yearn clock nobelium examine",
+                "yearn clock nobelium view"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "nice to meet you",
+                "overnice to foregather you",
+                "prissy to foregather you",
+                "prissy to fit you"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "pleased to meet you",
+                "delight to fill you",
+                "delight to fill you",
+                "please to fit you"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "it's great to see you",
+                "it's groovy to figure you",
+                "it's large to examine you",
+                "it's heavy to view you"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "hi there",
+                "hullo thither",
+                "hello thither",
+                "hullo thither"
             ]
         },
         {
             "intent": "unknown",
             "examples": [
-                "how are you",
-                "how equal you",
-                "how make up you",
-                "how represent you",
-                "how be you"
+                "hey",
+                "hey",
+                "hey",
+                "hey"
+            ]
+        },
+        {
+            "intent": "greeting",
+            "examples": [
+                "yo",
+                "yo",
+                "yo",
+                "yo"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "sup",
+                "swallow",
+                "swallow",
+                "swallow"
             ]
         },
         {
             "intent": "goodbye",
             "examples": [
                 "bye",
-                "sayonara",
+                "adios",
                 "goodbye",
+                "adieu"
+            ]
+        },
+        {
+            "intent": "goodbye",
+            "examples": [
+                "goodbye",
+                "adieu",
+                "cheerio",
+                "adieu"
+            ]
+        },
+        {
+            "intent": "goodbye",
+            "examples": [
+                "see you later",
+                "view you late",
+                "view you late",
+                "view you ulterior"
+            ]
+        },
+        {
+            "intent": "goodbye",
+            "examples": [
+                "take care",
+                "assume charge",
+                "occupy fear",
+                "assume fear"
+            ]
+        },
+        {
+            "intent": "goodbye",
+            "examples": [
+                "have a great day",
+                "feature angstrom groovy daylight",
+                "experience amp heavy daytime",
+                "experience amp groovy daylight"
+            ]
+        },
+        {
+            "intent": "goodbye",
+            "examples": [
+                "catch you later",
+                "view you ulterior",
+                "enamor you ulterior",
+                "view you afterward"
+            ]
+        },
+        {
+            "intent": "goodbye",
+            "examples": [
+                "farewell",
+                "leave-taking",
+                "leave",
+                "leave-taking"
+            ]
+        },
+        {
+            "intent": "goodbye",
+            "examples": [
                 "so long",
+                "hence yearn",
+                "then prospicient",
+                "then prospicient"
+            ]
+        },
+        {
+            "intent": "goodbye",
+            "examples": [
+                "see you soon",
+                "figure you shortly",
+                "examine you presently",
+                "examine you shortly"
+            ]
+        },
+        {
+            "intent": "goodbye",
+            "examples": [
+                "peace out",
+                "heartsease away",
+                "pacification KO'd",
+                "heartsease KO'd"
+            ]
+        },
+        {
+            "intent": "goodbye",
+            "examples": [
+                "later",
+                "ulterior",
+                "ulterior",
+                "late"
+            ]
+        },
+        {
+            "intent": "goodbye",
+            "examples": [
                 "bye-bye",
-                "auf wiedersehen"
+                "adieu",
+                "goodbye",
+                "goodbye"
             ]
         },
         {
-            "intent": "unknown",
+            "intent": "goodbye",
             "examples": [
-                "what's up",
-                "what's upward",
-                "what's up"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "thank you",
-                "give thanks you",
-                "thank you"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "hi",
-                "Hawai'i",
-                "HI",
-                "hullo",
-                "howdy"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "hello",
-                "hullo",
-                "hi",
-                "howdy"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "how are you",
-                "how be you"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "bye",
-                "sayonara",
-                "bye",
-                "good-bye",
-                "bye-bye",
-                "auf wiedersehen"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "what's up",
-                "what's astir",
-                "what's up",
-                "what's improving"
+                "talk to you soon",
+                "verbalise to you presently",
+                "verbalise to you presently",
+                "utter to you shortly"
             ]
         },
         {
             "intent": "gratitude",
             "examples": [
                 "thank you",
-                "give thanks you",
-                "thank you"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "hi",
-                "hello",
-                "hullo",
-                "howdy"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "hello",
-                "hello",
-                "hi",
-                "hullo",
-                "howdy"
-            ]
-        },
-        {
-            "intent": "greeting",
-            "examples": [
-                "how are you",
-                "how be you",
-                "how comprise you",
-                "how make up you",
-                "how personify you",
-                "how are you"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "bye",
-                "arrivederci",
-                "so long",
-                "bye-bye",
-                "auf wiedersehen"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "what's up",
-                "what's upwards",
-                "what's up"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
                 "thank you",
-                "give thanks you",
-                "thank you"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "hi",
-                "Hawai'i",
-                "how-do-you-do",
-                "Aloha State",
-                "HI"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "hello",
-                "hi",
-                "howdy"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "how are you",
-                "how be you",
-                "how personify you",
-                "how follow you",
-                "how are you"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
-                "bye",
-                "arrivederci",
-                "bye",
-                "good-bye",
-                "bye-bye"
-            ]
-        },
-        {
-            "intent": "greeting",
-            "examples": [
-                "what's up",
-                "what's astir",
-                "what's upward",
-                "what's upwards",
-                "what's up"
-            ]
-        },
-        {
-            "intent": "unknown",
-            "examples": [
                 "thank you",
-                "give thanks you",
                 "thank you"
             ]
         },
         {
-            "intent": "unknown",
+            "intent": "gratitude",
             "examples": [
-                "hi",
-                "Hawaii",
-                "Aloha State",
-                "hullo",
-                "Hawai'i"
+                "thanks",
+                "thank",
+                "thank",
+                "thank"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "many thanks",
+                "many thank",
+                "many thank",
+                "many thank"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "much appreciated",
+                "lots apprize",
+                "practically appreciate",
+                "lots apprize"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "I appreciate it",
+                "ace value it",
+                "unity value it",
+                "unity value it"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "thanks a lot",
+                "thank ampere bunch",
+                "thank ampere mess",
+                "thank amp bunch"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "thanks a ton",
+                "thank angstrom ton",
+                "thank ampere ton",
+                "thank angstrom ton"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "big thanks",
+                "bountiful thank",
+                "heavy thank",
+                "bountiful thank"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "thank you so much",
+                "thank you hence lots",
+                "thank you thus often",
+                "thank you thus lots"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "I really appreciate it",
+                "ace actually apprize it",
+                "unity actually treasure it",
+                "one very value it"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "I'm grateful",
+                "I'm thankful",
+                "I'm thankful",
+                "I'm thankful"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "thanks a bunch",
+                "thank amp lot",
+                "thank angstrom lot",
+                "thank ampere gang"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "I owe you one",
+                "one owe you unmatched",
+                "one owe you ace",
+                "one owe you unmatched"
+            ]
+        },
+        {
+            "intent": "gratitude",
+            "examples": [
+                "you're the best",
+                "you're the outflank",
+                "you're the advantageously",
+                "you're the comfortably"
             ]
         },
         {
             "intent": "unknown",
             "examples": [
-                "hello",
-                "hello",
-                "how-do-you-do",
-                "hullo"
+                "no problem",
+                "nobelium trouble",
+                "nobelium trouble",
+                "nobelium trouble"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "you're welcome",
+                "you're receive",
+                "you're receive",
+                "you're receive"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "anytime",
+                "anytime",
+                "anytime",
+                "anytime"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "don't mention it",
+                "don't observe it",
+                "don't name it",
+                "don't note it"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "my pleasure",
+                "my pleasance",
+                "my joy",
+                "my delight"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "it's nothing",
+                "it's null",
+                "it's zip",
+                "it's null"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "you're always welcome",
+                "you're perpetually receive",
+                "you're incessantly receive",
+                "you're ever receive"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "glad to help",
+                "gladiolus to supporter",
+                "happy to supporter",
+                "gladiolus to supporter"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "how do you feel today",
+                "how practice you finger now",
+                "how practice you palpate nowadays",
+                "how practice you palpate now"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "what\u2019s happening",
+                "what\u2019s happen",
+                "what\u2019s bechance",
+                "what\u2019s happen"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "what\u2019s going on",
+                "what\u2019s extend along",
+                "what\u2019s extend along",
+                "what\u2019s extend along"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "tell me something interesting",
+                "state Maine something concern",
+                "say Maine something worry",
+                "state Maine something concern"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "how\u2019s life",
+                "how\u2019s aliveness",
+                "how\u2019s lifetime",
+                "how\u2019s lifetime"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "how\u2019s everything",
+                "how\u2019s everything",
+                "how\u2019s everything",
+                "how\u2019s everything"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "what have you been up to",
+                "what feature you represent astir to",
+                "what receive you live upward to",
+                "what receive you represent astir to"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "how are things",
+                "how ar affair",
+                "how ar matter",
+                "how follow matter"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "any news",
+                "whatsoever newsworthiness",
+                "whatever tidings",
+                "whatsoever newsworthiness"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "what\u2019s the latest",
+                "what\u2019s the later",
+                "what\u2019s the recent",
+                "what\u2019s the recent"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "what's the plan for today",
+                "what's the contrive for nowadays",
+                "what's the contrive for now",
+                "what's the contrive for nowadays"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what do you think about AI",
+                "what suffice you suppose near AI",
+                "what suffice you guess near AI",
+                "what practice you guess near AI"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "tell me a joke",
+                "severalise Maine angstrom caper",
+                "severalise Maine amp put-on",
+                "state Maine angstrom caper"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "make me laugh",
+                "shit Maine joke",
+                "reach Maine joke",
+                "shit Maine gag"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what's your name",
+                "what's your figure",
+                "what's your gens",
+                "what's your mention"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "who are you",
+                "who ar you",
+                "who ar you",
+                "who follow you"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what do you do",
+                "what exercise you practice",
+                "what practice you exercise",
+                "what practice you exercise"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "are you a human",
+                "represent you amp man",
+                "follow you ampere man",
+                "ar you amp man"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "are you a bot",
+                "follow you angstrom bot",
+                "ar you angstrom bot",
+                "ar you amp bot"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "where are you from",
+                "where follow you from",
+                "where represent you from",
+                "where ar you from"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "do you like humans",
+                "practice you wish world",
+                "suffice you comparable world",
+                "practice you comparable world"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "can you help me",
+                "dismiss you supporter Maine",
+                "butt you facilitate Maine",
+                "ass you supporter Maine"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what can you do",
+                "what ass you practice",
+                "what butt you suffice",
+                "what dismiss you suffice"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what's your purpose",
+                "what's your design",
+                "what's your aim",
+                "what's your aim"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "who created you",
+                "who produce you",
+                "who create you",
+                "who produce you"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what\u2019s your favorite color",
+                "what\u2019s your preferent distort",
+                "what\u2019s your ducky colorize",
+                "what\u2019s your ducky colorize"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "do you like music",
+                "practice you wish euphony",
+                "exercise you wish medicine",
+                "suffice you comparable euphony"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "what\u2019s your favorite song",
+                "what\u2019s your ducky call",
+                "what\u2019s your ducky vocal",
+                "what\u2019s your ducky vocal"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "do you watch movies",
+                "exercise you observe pic",
+                "practice you lookout picture",
+                "practice you observe film"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "what's your favorite movie",
+                "what's your ducky flick",
+                "what's your ducky flick",
+                "what's your darling film"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "do you play games",
+                "suffice you caper punt",
+                "suffice you caper game",
+                "exercise you romp stake"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "what\u2019s your favorite game",
+                "what\u2019s your darling mettlesome",
+                "what\u2019s your preferent punt",
+                "what\u2019s your darling gimpy"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "do you read books",
+                "suffice you study ledger",
+                "exercise you study Koran",
+                "exercise you study Book"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "what\u2019s your favorite book",
+                "what\u2019s your darling Koran",
+                "what\u2019s your ducky Koran",
+                "what\u2019s your darling Word"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "tell me a fun fact",
+                "severalise Maine angstrom sport fact",
+                "say Maine amp sport fact",
+                "say Maine amp playfulness fact"
+            ]
+        },
+        {
+            "intent": "small_talk",
+            "examples": [
+                "do you believe in aliens",
+                "exercise you think inwards unknown",
+                "exercise you consider indium noncitizen",
+                "suffice you consider inwards unknown"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "do you have emotions",
+                "suffice you feature emotion",
+                "exercise you receive emotion",
+                "exercise you feature emotion"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "can you think",
+                "dismiss you suppose",
+                "butt you guess",
+                "butt you suppose"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "do you sleep",
+                "exercise you sopor",
+                "suffice you quietus",
+                "practice you kip"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "can you dream",
+                "ass you aspiration",
+                "dismiss you aspiration",
+                "butt you dreaming"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what do you do for fun",
+                "what practice you practice for play",
+                "what practice you suffice for sport",
+                "what practice you exercise for play"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "do you get tired",
+                "practice you mystify wear",
+                "practice you amaze weary",
+                "suffice you acquire pall"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what\u2019s your favorite food",
+                "what\u2019s your preferent nutrient",
+                "what\u2019s your preferent nutrient",
+                "what\u2019s your darling nutrient"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "can you dance",
+                "ass you terpsichore",
+                "ass you terpsichore",
+                "butt you terpsichore"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "do you have a family",
+                "practice you receive ampere home",
+                "suffice you receive angstrom menage",
+                "suffice you experience ampere menage"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "can you make friends",
+                "dismiss you defecate champion",
+                "ass you defecate champion",
+                "ass you shit Quaker"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "how do you learn",
+                "how exercise you study",
+                "how suffice you instruct",
+                "how exercise you study"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "what do you know about me",
+                "what exercise you fuck roughly Maine",
+                "what suffice you live nigh Maine",
+                "what exercise you live near Maine"
+            ]
+        },
+        {
+            "intent": "unknown",
+            "examples": [
+                "do you remember me",
+                "exercise you retrieve Maine",
+                "suffice you retrieve Maine",
+                "exercise you commemorate Maine"
             ]
         }
     ]

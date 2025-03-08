@@ -1,10 +1,10 @@
 {
   "labels":[
     "greeting",
+    "small_talk",
     "unknown",
     "goodbye",
-    "gratitude",
-    "small_talk"
+    "gratitude"
   ],
   "threshold":0.0,
   "positive_label":null
