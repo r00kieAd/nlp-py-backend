@@ -45,10 +45,12 @@ class App:
         
         @self.app.route('/train_spacy', methods=['GET'])
         def train_spacy_function():
+            epochs = request.args.get('n', default=10, type=int)
             try:
-                return jsonify(self.train_spacy.train_model())
+                result = self.train_spacy.train_model(epochs)
+                return jsonify(result)
             except Exception as e:
-                return jsonify({"status": "failed", "error": str(repr(e))})
+                return jsonify({"status": "failed", "error": str(e)})
 
 
     def run(self):

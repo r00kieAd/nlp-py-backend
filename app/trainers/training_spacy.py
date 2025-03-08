@@ -1,9 +1,10 @@
-import spacy, os, json, logging
+import spacy, os, json, logging, random
 from spacy.pipeline.textcat import Config, single_label_cnn_config
 from trainers import generate_sentences, generate_responses
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-class Training_Spacy():
+class Training_Spacy:
 
     def __init__(self):
         self.intents_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'intents.json')
@@ -23,37 +24,51 @@ class Training_Spacy():
         self.response_generation.expand_responses()
 
     def load_data(self):
-        logging.info('loading intent data...')
+        logging.info('Loading intent data...')
         with open(self.intents_path, 'r') as file:
             data = json.load(file)
 
         train_data = []
-        for intents in data["intents"]:
-            self.textcat.add_label(intents["intent"])
-            for example in intents["examples"]:
-                item = (example, {self.INTENT_KEY: {intents["intent"]: 1.0}})
-                train_data.append(item)
-        logging.info('data loaded...')
+        intent_distribution = {}
+
+        for entry in data["intents"]:
+            intent = entry["intent"]
+            examples = list(set(entry["examples"]))
+
+            if len(examples) > 100:
+                examples = random.sample(examples, 100) 
+
+            intent_distribution[intent] = len(examples)
+            self.textcat.add_label(intent) 
+            
+            for example in examples:
+                train_data.append((example, {self.INTENT_KEY: {intent: 1.0}}))
+
+        logging.info(f"Intent Distribution: {intent_distribution}")
         return train_data
 
-    def train_model(self, n_iter=10):
+    def train_model(self, epochs):
         train_data = self.load_data()
-        logging.info("training started...")
+        random.shuffle(train_data)
+        logging.info("Training started...")
         try:
             self.gen_sentences()
             self.gen_responses()
             optimizer = self.nlp.begin_training()
-            for _ in range(n_iter):
+
+            for epoch in range(epochs):
                 losses = {}
                 for text, annotations in train_data:
-                    print('annotations', annotations)
                     doc = self.nlp.make_doc(text)
                     example = spacy.training.Example.from_dict(doc, annotations)
-                    self.nlp.update([example], losses=losses, sgd=optimizer)
-                logging.info(f"Loss: {losses['textcat']}")
-            self.nlp.to_disk(self.trained_model_path)
-            return {"status": "success"}
-        except Exception as e:
-            logging.info(str(repr(e)))
-            return {"status": "failed", "error": "Error while training the custom model, see logs..."}
+                    self.nlp.update([example], losses=losses)
 
+                logging.info(f"Epoch {epoch+1}, Loss: {losses.get('textcat', 0)}")
+
+            self.nlp.to_disk(self.trained_model_path)
+            logging.info(f"Model trained and saved to {self.trained_model_path}")
+            return {"status": "success", "epochs": epochs}
+
+        except Exception as e:
+            logging.error(str(repr(e)))
+            return {"status": "failed", "error": "Error while training the custom model, see logs..."}
