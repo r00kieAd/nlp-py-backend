@@ -13,10 +13,10 @@
             "thank you": "gratitude"
         },
         {
-            "how are you": "small_talk"
+            "how are you": "greeting"
         },
         {
-            "what's up": "small_talk"
+            "what's up": "greeting"
         }
     ]
 }

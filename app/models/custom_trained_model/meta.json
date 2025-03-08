@@ -19,6 +19,7 @@
   "labels":{
     "textcat":[
       "greeting",
+      "unknown",
       "goodbye",
       "gratitude",
       "small_talk"

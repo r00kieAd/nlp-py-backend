@@ -36,7 +36,8 @@ class Training_Spacy():
         logging.info('data loaded...')
         return train_data
 
-    def train_model(self, n_iter=10):
+    def train_model(self, ephocs):
+        n_iter = ephocs
         train_data = self.load_data()
         logging.info("training started...")
         try:
@@ -52,7 +53,7 @@ class Training_Spacy():
                     self.nlp.update([example], losses=losses, sgd=optimizer)
                 logging.info(f"Loss: {losses['textcat']}")
             self.nlp.to_disk(self.trained_model_path)
-            return {"status": "success"}
+            return {"status": "success", "ephocs": ephocs}
         except Exception as e:
             logging.info(str(repr(e)))
             return {"status": "failed", "error": "Error while training the custom model, see logs..."}

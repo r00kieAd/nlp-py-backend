@@ -4,8 +4,14 @@ class Dynamic_Model:
     def __init__(self):
         self.trained_model_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'custom_trained_model')
         self.json_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'responses.json')
-        self.nlp = spacy.load(self.trained_model_path)
+        self.nlp = self.load_model()
         self.responses = self.load_responses()
+
+    def load_model(self):
+        try:
+            return spacy.load(self.trained_model_path)
+        except:
+            return None
 
     def load_responses(self):
         if os.path.exists(self.json_path):
