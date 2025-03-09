@@ -19,7 +19,6 @@ nltk.download("punkt")
 class Train_Tensor:
     def __init__(self):
         self.log_messages = []
-        self.setupLogging()
         self.sentences = []
         self.labels = []
         self.responses = {}
@@ -100,6 +99,10 @@ class Train_Tensor:
 
     def createModel(self, n):
         try:
+            try:
+                self.setupLogging()
+            except:
+                self.log_messages = "error while setting up logs"
             self.extractData()
             self.encodeLabels()
             self.tokenize()
@@ -115,8 +118,8 @@ class Train_Tensor:
             ])
             model.compile(loss="sparse_categorical_crossentropy",optimizer="adam", metrics=["accuracy"])
             history = model.fit(self.padded_sequences, np.array(self.encoded_labels), epochs=n, batch_size=8)
-            logging.info(f"Respective training accuracies for {n} epochs: {history.history['accuracy']}")
-            logging.info(f"Respective training losses for {n} epochs: {history.history['loss']}")
+            accuracies = history.history['accuracy']
+            losses = history.history['loss']
             model.save(self.trained_model_path)
 
             with open(self.model_tokenizer_path, "w") as file:
@@ -128,7 +131,7 @@ class Train_Tensor:
             with open(self.max_len_path, "w") as file:
                 json.dump({"max_length": self.max_length}, file)
             logging.info('Training complete.')
-            return {"status": "success", "epochs": n, "logs": self.log_messages}
+            return {"status": "success", "epochs": n, "logs": self.log_messages, "accuracies": accuracies, "losses": losses}
         except Exception as e:
             logging.critical(f'{e}')
             return {"status": "failed", "error": "error occured while training the model", "logs": self.log_messages}   
