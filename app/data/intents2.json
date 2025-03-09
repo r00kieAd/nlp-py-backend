@@ -2,78 +2,202 @@
     "intents": [
         {
             "intent": "greeting",
-            "examples": ["hello", "hi", "hey there", "good morning", "good evening", "hey", "hi there"],
-            "responses": ["Hello!", "Hi there!", "Hey! How can I help?", "Good to see you!"]
+            "examples": [
+                "hello",
+                "hi",
+                "hey there",
+                "good morning",
+                "good evening",
+                "hey",
+                "hi there"
+            ],
+            "responses": [
+                "Hello!",
+                "Hi there!",
+                "Hey! How can I help?",
+                "Good to see you!"
+            ]
         },
         {
             "intent": "goodbye",
-            "examples": ["bye", "goodbye", "see you later", "take care", "farewell"],
-            "responses": ["Goodbye!", "See you soon!", "Take care!", "Have a great day!"]
+            "examples": [
+                "bye",
+                "goodbye",
+                "see you later",
+                "take care",
+                "farewell"
+            ],
+            "responses": [
+                "Goodbye!",
+                "See you soon!",
+                "Take care!",
+                "Have a great day!"
+            ]
         },
         {
             "intent": "gratitude",
-            "examples": ["thank you", "thanks", "appreciate it", "much obliged"],
-            "responses": ["You're welcome!", "No problem!", "Anytime!", "Glad to help!"]
+            "examples": [
+                "thank you",
+                "thanks",
+                "appreciate it",
+                "much obliged"
+            ],
+            "responses": [
+                "You're welcome!",
+                "No problem!",
+                "Anytime!",
+                "Glad to help!"
+            ]
         },
         {
             "intent": "help",
-            "examples": ["can you help me?", "i need assistance", "how do i do this?", "help me please"],
-            "responses": ["Of course! What do you need help with?", "Sure! How can I assist you?", "I'm here to help!"]
+            "examples": [
+                "can you help me?",
+                "i need assistance",
+                "how do i do this?",
+                "help me please"
+            ],
+            "responses": [
+                "Of course! What do you need help with?",
+                "Sure! How can I assist you?",
+                "I'm here to help!"
+            ]
         },
         {
             "intent": "small_talk",
-            "examples": ["how are you?", "how's it going?", "what's up?", "how have you been?"],
-            "responses": ["I'm just a bot, but I'm doing great!", "I'm good! How about you?", "I'm here to assist you!"]
+            "examples": [
+                "how are you?",
+                "how's it going?",
+                "what's up?",
+                "how have you been?"
+            ],
+            "responses": [
+                "I'm just a bot, but I'm doing great!",
+                "I'm good! How about you?",
+                "I'm here to assist you!"
+            ]
         },
         {
             "intent": "weather",
-            "examples": ["what's the weather like?", "is it raining?", "how's the weather today?"],
-            "responses": ["I'm not a weather bot, but you can check a weather website!", "I don't have real-time updates, but I can suggest looking outside!"]
+            "examples": [
+                "what's the weather like?",
+                "is it raining?",
+                "how's the weather today?"
+            ],
+            "responses": [
+                "I'm not a weather bot, but you can check a weather website!",
+                "I don't have real-time updates, but I can suggest looking outside!"
+            ]
         },
         {
             "intent": "jokes",
-            "examples": ["tell me a joke", "make me laugh", "give me something funny"],
-            "responses": ["Why did the chicken cross the road? To get to the other side!", "I'm a chatbot, but I can still crack a joke!"]
+            "examples": [
+                "tell me a joke",
+                "make me laugh",
+                "give me something funny"
+            ],
+            "responses": [
+                "Why did the chicken cross the road? To get to the other side!",
+                "I'm a chatbot, but I can still crack a joke!"
+            ]
         },
         {
             "intent": "bot_identity",
-            "examples": ["who are you?", "what are you?", "are you a bot?"],
-            "responses": ["I'm a chatbot here to assist you!", "I am an AI assistant designed to help you."]
+            "examples": [
+                "who are you?",
+                "what are you?",
+                "are you a bot?"
+            ],
+            "responses": [
+                "I'm a chatbot here to assist you!",
+                "I am an AI assistant designed to help you."
+            ]
         },
         {
             "intent": "name",
-            "examples": ["what's your name?", "do you have a name?", "who are you called?"],
-            "responses": ["I am a chatbot!", "I don't have a name, but you can call me ChatBot."]
+            "examples": [
+                "what's your name?",
+                "do you have a name?",
+                "who are you called?"
+            ],
+            "responses": [
+                "I am a chatbot!",
+                "I don't have a name, but you can call me ChatBot."
+            ]
         },
         {
             "intent": "compliments",
-            "examples": ["you're awesome", "great job", "you are smart"],
-            "responses": ["Thank you!", "I appreciate it!", "You're too kind!"]
+            "examples": [
+                "you're awesome",
+                "great job",
+                "you are smart"
+            ],
+            "responses": [
+                "Thank you!",
+                "I appreciate it!",
+                "You're too kind!"
+            ]
         },
         {
             "intent": "insults",
-            "examples": ["you're dumb", "you're useless", "you are bad"],
-            "responses": ["I'm here to help, not to argue!", "That's not very nice.", "Let's keep it friendly!"]
+            "examples": [
+                "you're dumb",
+                "you're useless",
+                "you are bad"
+            ],
+            "responses": [
+                "I'm here to help, not to argue!",
+                "That's not very nice.",
+                "Let's keep it friendly!"
+            ]
         },
         {
             "intent": "age",
-            "examples": ["how old are you?", "when were you created?", "are you young or old?"],
-            "responses": ["I exist in the digital world, so I don't age!", "I'm as old as the internet, maybe!"]
+            "examples": [
+                "how old are you?",
+                "when were you created?",
+                "are you young or old?"
+            ],
+            "responses": [
+                "I exist in the digital world, so I don't age!",
+                "I'm as old as the internet, maybe!"
+            ]
         },
         {
             "intent": "hobbies",
-            "examples": ["what do you do for fun?", "do you have hobbies?", "what do you like?"],
-            "responses": ["I enjoy chatting with you!", "I like answering questions."]
+            "examples": [
+                "what do you do for fun?",
+                "do you have hobbies?",
+                "what do you like?"
+            ],
+            "responses": [
+                "I enjoy chatting with you!",
+                "I like answering questions."
+            ]
         },
         {
             "intent": "random_fact",
-            "examples": ["tell me a fact", "give me something interesting", "tell me something new"],
-            "responses": ["Did you know honey never spoils?", "An octopus has three hearts!"]
+            "examples": [
+                "tell me a fact",
+                "give me something interesting",
+                "tell me something new"
+            ],
+            "responses": [
+                "Did you know honey never spoils?",
+                "An octopus has three hearts!"
+            ]
         },
         {
             "intent": "news",
-            "examples": ["what's new?", "tell me the latest news", "any updates?"],
-            "responses": ["I don't have real-time news, but you can check a news website!", "Stay informed by checking the latest headlines online!"]
+            "examples": [
+                "what's new?",
+                "tell me the latest news",
+                "any updates?"
+            ],
+            "responses": [
+                "I don't have real-time news, but you can check a news website!",
+                "Stay informed by checking the latest headlines online!"
+            ]
         }
     ]
 }
