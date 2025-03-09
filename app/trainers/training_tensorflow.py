@@ -10,12 +10,15 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 
 nltk.download("punkt")
-logging.basicConfig(level=logging.INFO,
-                    format="%(asctime)s - %(levelname)s - %(message)s")
+# logging.basicConfig(filename="training.log",filemode="a",level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
+# logger = logging.getLogger()
+# for handler in logger.handlers:
+    # handler.flush()
 
 
 class Train_Tensor:
     def __init__(self):
+        self.log_messages = []
         self.sentences = []
         self.labels = []
         self.responses = {}
@@ -27,13 +30,24 @@ class Train_Tensor:
         self.tokenizer = None
         self.max_length = 0
         self.label_encoder = None
-        self.intents_path = os.path.join(os.path.dirname(
-            __file__), '..', 'data', 'intents2.json')
-        self.trained_model_path = os.path.join(os.path.dirname(
-            __file__), '..', 'models', 'custom_tensor.keras')
-        self.model_tokenizer_path = os.path.join(
-            os.path.dirname(__file__), '..', 'data', 'tokenizer.json')
+        self.log_path = os.path.join(os.path.dirname(__file__), 'training.log')
+        self.intents_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'intents2.json')
+        self.trained_model_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'custom_tensor.keras')
+        self.model_tokenizer_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'tokenizer.json')
         self.data = self.loadData()
+        self.pickle_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'label_encoder.pkl')
+        self.max_len_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'max_length.json')
+
+    def setupLogging(self):
+        class ListLogger(logging.Handler):
+            def emit(handler_self, record):
+                formatted_record = handler_self.format(record)
+                self.log_messages.append(formatted_record)
+
+        list_handler = ListLogger()
+        list_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+        logging.getLogger().addHandler(list_handler)
+        logging.getLogger().setLevel(logging.INFO)
 
     def loadData(self):
         try:
@@ -83,36 +97,42 @@ class Train_Tensor:
             f"Vocabulary Size: {self.vocab_size}, Max Length: {self.max_length}, Classes: {self.num_classes}")
         logging.info("Tokenization complete.")
 
-    def createModel(self):
-        """Training process"""
-        self.extractData()
-        self.encodeLabels()
-        self.tokenize()
+    def createModel(self, n):
+        try:
+            try:
+                self.setupLogging()
+            except:
+                self.log_messages = "error while setting up logs"
+            self.extractData()
+            self.encodeLabels()
+            self.tokenize()
+            logging.info('starting to train...')
+            model = tf.keras.Sequential([
+                tf.keras.layers.Embedding(
+                    self.vocab_size, 16, input_length=self.max_length),
+                tf.keras.layers.Bidirectional(
+                    tf.keras.layers.LSTM(16, return_sequences=True)),
+                tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(16)),
+                tf.keras.layers.Dense(16, activation="relu"),
+                tf.keras.layers.Dense(self.num_classes, activation="softmax")
+            ])
+            model.compile(loss="sparse_categorical_crossentropy",optimizer="adam", metrics=["accuracy"])
+            history = model.fit(self.padded_sequences, np.array(self.encoded_labels), epochs=n, batch_size=8)
+            accuracies = history.history['accuracy']
+            losses = history.history['loss']
+            model.save(self.trained_model_path)
 
-        model = tf.keras.Sequential([
-            tf.keras.layers.Embedding(
-                self.vocab_size, 16, input_length=self.max_length),
-            tf.keras.layers.Bidirectional(
-                tf.keras.layers.LSTM(16, return_sequences=True)),
-            tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(16)),
-            tf.keras.layers.Dense(16, activation="relu"),
-            tf.keras.layers.Dense(self.num_classes, activation="softmax")
-        ])
-        model.compile(loss="sparse_categorical_crossentropy",
-                    optimizer="adam", metrics=["accuracy"])
-        model.fit(self.padded_sequences, np.array(
-            self.encoded_labels), epochs=50, batch_size=8)
-        model.save(self.trained_model_path)
+            with open(self.model_tokenizer_path, "w") as file:
+                json.dump(self.tokenizer.to_json(), file)
 
-        with open(self.model_tokenizer_path, "w") as file:
-            json.dump(self.tokenizer.to_json(), file)
+            with open(self.pickle_path, 'wb') as file:
+                pickle.dump(self.label_encoder, file)
 
-        with open(os.path.join(os.path.dirname(__file__), '..', 'data', 'label_encoder.pkl'), 'wb') as file:
-            pickle.dump(self.label_encoder, file)
+            with open(self.max_len_path, "w") as file:
+                json.dump({"max_length": self.max_length}, file)
+            logging.info('Training complete.')
+            return {"status": "success", "epochs": n, "logs": self.log_messages, "accuracies": accuracies, "losses": losses}
+        except Exception as e:
+            logging.critical(f'{e}')
+            return {"status": "failed", "error": "error occured while training the model", "logs": self.log_messages}   
 
-        with open(os.path.join(os.path.dirname(__file__), '..', 'data', 'max_length.json'), "w") as file:
-            json.dump({"max_length": self.max_length}, file)
-
-
-trainer = Train_Tensor()
-trainer.createModel()

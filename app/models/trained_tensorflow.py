@@ -97,7 +97,6 @@ class Tensor_Model:
             logging.critical(f'Error during prediction: {e}')
             return "Sorry, something went wrong."
 
-# Test the chatbot
-chatbot = Tensor_Model()
-print(f'\npredition 1: {chatbot.predictIntent("hi")}\n')  # Expected output: "Hello!"
-print(f'\npredition 2: {chatbot.predictIntent("bye")}\n')  # Expected output: "Goodbye!"
+# chatbot = Tensor_Model()
+# print(f'\npredition 1: {chatbot.predictIntent("hi")}\n')
+# print(f'\npredition 2: {chatbot.predictIntent("bye")}\n')
