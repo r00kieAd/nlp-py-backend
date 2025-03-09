@@ -38,6 +38,9 @@ class Dynamic_Model:
         return best_intent if scores[best_intent] > 0.6 else "unknown"
 
     def dynamic_response(self, user_input):
-        intent = self.predict_intent(user_input)
-        return random.choice(self.responses.get(intent, self.responses["unknown"]))
+        try:
+            intent = self.predict_intent(user_input)
+            return {"status": "success", "reply":random.choice(self.responses.get(intent, self.responses["unknown"])), "model": "Trained Spacy"}
+        except:
+            return {"status": "failed", "error": "unknown error while prediction", "model": "Trained Spacy"}
 

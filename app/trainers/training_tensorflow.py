@@ -81,11 +81,13 @@ class Train_Tensor:
         logging.info("Encoding labels...")
         self.label_encoder = LabelEncoder()
         self.encoded_labels = self.label_encoder.fit_transform(self.labels)
+        label_map = dict(zip(self.label_encoder.classes_, range(len(self.label_encoder.classes_))))
+        logging.info(f"Label Mapping: {label_map}")
         logging.info("Encoding complete.")
 
     def tokenize(self):
         logging.info("Tokenizing data...")
-        self.tokenizer = Tokenizer(num_words=1000, oov_token="<OOV>")
+        self.tokenizer = Tokenizer(num_words=5000, oov_token="<OOV>")
         self.tokenizer.fit_on_texts(self.sentences)
         word_index = self.tokenizer.word_index
         sequences = self.tokenizer.texts_to_sequences(self.sentences)
@@ -97,7 +99,7 @@ class Train_Tensor:
             f"Vocabulary Size: {self.vocab_size}, Max Length: {self.max_length}, Classes: {self.num_classes}")
         logging.info("Tokenization complete.")
 
-    def createModel(self, n):
+    def createModel(self, n, lstm=128):
         try:
             try:
                 self.setupLogging()
@@ -106,21 +108,27 @@ class Train_Tensor:
             self.extractData()
             self.encodeLabels()
             self.tokenize()
-            logging.info('starting to train...')
+            logging.info('Training...')
+            # model = tf.keras.Sequential([
+            #     tf.keras.layers.Embedding(self.vocab_size, lstm, input_length=self.max_length),
+            #     tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm, return_sequences=True, dropout=drop)),
+            #     tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm, dropout=drop)),
+            #     tf.keras.layers.Dense(lstm, activation="relu"),
+            #     tf.keras.layers.Dense(self.num_classes, activation="softmax")
+            # ])
             model = tf.keras.Sequential([
-                tf.keras.layers.Embedding(
-                    self.vocab_size, 16, input_length=self.max_length),
-                tf.keras.layers.Bidirectional(
-                    tf.keras.layers.LSTM(16, return_sequences=True)),
-                tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(16)),
-                tf.keras.layers.Dense(16, activation="relu"),
+                tf.keras.layers.Embedding(self.vocab_size, lstm, input_length=self.max_length),  
+                tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm, return_sequences=True, dropout=0.4, recurrent_dropout=0.2)),  
+                tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm, dropout=0.4, recurrent_dropout=0.2)),  
+                tf.keras.layers.Dense(128, activation="relu"),
+                tf.keras.layers.Dropout(0.4),  # 🔥 Forces model to generalize
                 tf.keras.layers.Dense(self.num_classes, activation="softmax")
             ])
             model.compile(loss="sparse_categorical_crossentropy",optimizer="adam", metrics=["accuracy"])
             history = model.fit(self.padded_sequences, np.array(self.encoded_labels), epochs=n, batch_size=8)
-            accuracies = history.history['accuracy']
-            losses = history.history['loss']
             model.save(self.trained_model_path)
+            logging.info(f"Final Training Loss: {history.history['loss'][-1] * 100:.4f}%")
+            logging.info(f"Final Training Accuracy: {history.history['accuracy'][-1] * 100:.4f}%")
 
             with open(self.model_tokenizer_path, "w") as file:
                 json.dump(self.tokenizer.to_json(), file)
@@ -131,7 +139,7 @@ class Train_Tensor:
             with open(self.max_len_path, "w") as file:
                 json.dump({"max_length": self.max_length}, file)
             logging.info('Training complete.')
-            return {"status": "success", "epochs": n, "logs": self.log_messages, "accuracies": accuracies, "losses": losses}
+            return {"status": "success", "epochs": n, "logs": self.log_messages}
         except Exception as e:
             logging.critical(f'{e}')
             return {"status": "failed", "error": "error occured while training the model", "logs": self.log_messages}   
