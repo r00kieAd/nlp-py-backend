@@ -33,14 +33,13 @@ class App:
                     return jsonify({"error": "Missing 'input' param"}), 400
                 if model == 2:
                     response = self.tensor_model.predictIntent(msg)
-                    mode = "TensorFlow"
                 elif model == 1:
                     response = self.dynamic_model.dynamic_response(msg)
-                    mode = "Trained Spacy"
                 else:
                     response = self.static_model.static_response(msg)
-                    mode = "Static Spacy"
-                return jsonify({"reply": response, "model": mode})
+                if response['status'] == 'failed':
+                    return jsonify(response), 500
+                return jsonify(response)
             except Exception as e:
                 return jsonify({"error": f"error while getting reply {str(e)}"}), 500
 
@@ -64,7 +63,7 @@ class App:
             epochs = request.args.get('n', default=50, type=int)
             try:
                 result = self.train_spacy.train_model(epochs)
-                if result.status == "failed":
+                if result['status'] == "failed":
                     return jsonify(result), 500
                 return jsonify(result)
             except Exception as e:
@@ -75,7 +74,7 @@ class App:
             epochs = request.args.get('n', default=50, type=int)
             try:
                 result = self.train_tensor.createModel(epochs)
-                if result.status == "failed":
+                if result['status'] == "failed":
                     return jsonify(result), 500
                 return jsonify(result)
             except Exception as e:

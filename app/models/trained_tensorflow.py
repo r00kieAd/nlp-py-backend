@@ -15,7 +15,7 @@ class Tensor_Model:
         self.trained_model_path = os.path.join(os.path.dirname(__file__), 'custom_tensor.keras')
         print('model path: ', self.trained_model_path)
         self.model_tokenizer_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'tokenizer.json')
-        self.responses_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'responses.json')
+        self.responses_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'intents2.json')
         self.label_encoder_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'label_encoder.pkl')
         self.max_length_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'max_length.json')
         self.model = None
@@ -71,7 +71,9 @@ class Tensor_Model:
         try:
             logging.info('Loading responses...')
             with open(self.responses_path, "r") as file:
-                self.responses = json.load(file)
+                data = json.load(file)
+                for item in data["intents"]:
+                    self.responses[item["intent"]] = item["responses"]
             logging.info('Responses loaded successfully.')
         except Exception as e:
             logging.error(f'Error loading responses: {e}')
@@ -85,17 +87,22 @@ class Tensor_Model:
 
             logging.info('Predicting intent...')
             prediction = self.model.predict(padded)
+            probabilities = tf.nn.softmax(prediction)[0].numpy()
+            prediction = self.model.predict(padded)
             intent_index = np.argmax(tf.nn.softmax(prediction)[0])
             intent_name = self.label_encoder.inverse_transform([intent_index])[0]
-
-            logging.info(f'Predicted intent: {intent_name}')
+            confidence = float(f'{probabilities[intent_index]:.2f}')
+            logging.info(f'Predicted intent: {intent_name} (Confidence: {confidence})')
+            if confidence < 0.12:
+                return {"response": "I'm not sure. Can you rephrase?", "intent": "unknown", "confidence": confidence, "model": "TensorFlow", "status": "success"}
+            
             response = np.random.choice(self.responses.get(intent_name, ["Sorry, I didn't understand that."]))
             logging.info(f'Response: {response}')
-            return response
+            return {"status": "success", "reply": response, "model": "TensorFlow", "predicted_intent": intent_name, "confidence_score": confidence}
 
         except Exception as e:
             logging.critical(f'Error during prediction: {e}')
-            return "Sorry, something went wrong."
+            return {"status": "failed", "error": "Sorry, something went wrong during prediction", "model": "TensorFlow"}
 
 # chatbot = Tensor_Model()
 # print(f'\npredition 1: {chatbot.predictIntent("hi")}\n')
