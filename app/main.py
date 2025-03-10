@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from models import static_spacy, trained_spacy, trained_tensorflow
 from trainers import training_spacy, training_tensorflow
 from feedback import collect_feedback
+from history import get_history
 import json, os
 
 class App:
@@ -13,6 +14,7 @@ class App:
         self.train_spacy = training_spacy.Training_Spacy()
         self.train_tensor = training_tensorflow.Train_Tensor()
         self.collect_feedback = collect_feedback.Collect_Feedback()
+        self.get_history = get_history.Get_History()
         self.setup_routes()
         self.intents_path = os.path.join(os.path.dirname(__file__), '.', 'data', 'intent_mapping.json')
 
@@ -22,7 +24,7 @@ class App:
             return jsonify({"msg": "App initialized!"})
 
         @self.app.route('/get_reply', methods=['POST'])
-        def get_reply():
+        def getReply():
             try:
                 req_data = request.get_json()
                 if not req_data or "input" not in req_data:
@@ -43,8 +45,8 @@ class App:
             except Exception as e:
                 return jsonify({"error": f"error while getting reply {str(e)}"}), 500
 
-        @self.app.route('/collect_feedback', methods=['POST'])
-        def collect_feedback():
+        @self.app.route('/collect_feedback', methods=['PUT'])
+        def collectFeedback():
             req_data = request.get_json()
             example = req_data["example"]
             intent = req_data["intent"]
@@ -59,7 +61,7 @@ class App:
             return jsonify(resp)
         
         @self.app.route('/train_spacy', methods=['GET'])
-        def train_spacy_function():
+        def trainSpacyFunction():
             epochs = request.args.get('n', default=50, type=int)
             try:
                 result = self.train_spacy.train_model(epochs)
@@ -70,7 +72,7 @@ class App:
                 return jsonify({"status": "failed", "error": str(e)}), 500
 
         @self.app.route('/train_tensor', methods=['GET'])
-        def train_tensor_function():
+        def trainTensorFunction():
             epochs = request.args.get('n', default=50, type=int)
             try:
                 result = self.train_tensor.createModel(epochs)
@@ -80,6 +82,12 @@ class App:
             except Exception as e:
                 return jsonify({"status": "failed", "error": str(e)}), 500
 
+        @self.app.route('/tensor_training_history', methods=['GET'])
+        def getTensorHistory():
+            data = self.get_history.getData()
+            if data["status"] == "failed":
+                return jsonify(data), 500
+            return jsonify(data)
 
     def run(self):
         self.app.run(debug=True)

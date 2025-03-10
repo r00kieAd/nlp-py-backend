@@ -5,7 +5,7 @@ class Collect_Feedback():
 
     def __init__(self):
         self.intent_path_1 = os.path.join(os.path.dirname(__file__), '..', 'data', 'intents.json')
-        self.intent_path_2 = os.path.join(os.path.dirname(__file__), '..', 'data', 'intents2.json')
+        self.intent_path_2 = os.path.join(os.path.dirname(__file__), '..', 'data', 'tensor_intents.json')
         self.response_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'responses.json')
         self.sentences = os.path.join(os.path.dirname(__file__), '..', 'data', 'sentences.json')
         self.intent = ""
@@ -60,7 +60,8 @@ class Collect_Feedback():
                 for intents in all_intents:
                     if intents["intent"] == self.intent:
                         intents["examples"].append(self.examples)
-                        intents["responses"].append(self.responses)
+                        if self.responses not in intents["responses"]:
+                            intents["responses"].append(self.responses)
                         added = True
                 if not added:
                     examples = [self.examples]
