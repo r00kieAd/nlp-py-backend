@@ -1,4 +1,4 @@
-import logging
+import logging, traceback
 import os
 import json
 import numpy as np
@@ -14,12 +14,16 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(
 class Tensor_Model:
     def __init__(self):
         self.trained_model_path = os.path.join(os.path.dirname(__file__), 'custom_tensor.keras')
+        self.trained_trasnformer_path = os.path.join(os.path.dirname(__file__), 'resp_transformer.keras')
         self.model_tokenizer_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'tokenizer.json')
+        self.transformer_tokenizer_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'transformer_tokenizer.json')
         self.responses_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'tensor_intents.json')
         self.label_encoder_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'label_encoder.pkl')
         self.max_length_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'max_length.json')
         self.model = None
+        self.transformer_model = None
         self.tokenizer = None
+        self.transformer_tokenizer = None
         self.label_encoder = None
         self.max_length = 20
         self.responses = {}
@@ -34,27 +38,33 @@ class Tensor_Model:
 
     def loadModel(self):
         try:
-            logging.info('Loading trained model...')
+            logging.info('Loading trained models...')
             self.model = tf.keras.models.load_model(self.trained_model_path)
-            logging.info(f'Model loaded successfully..{type(self.model)}')
+            logging.info(f'Intent model loaded successfully..{type(self.model)}')
             try:
                 self.history = self.get_history.getData()
                 if self.history["status"] == "failed":
-                    logging.error("Could not fetch history.")
+                    logging.error("Could not fetch intent training history.")
                     return
                 self.training_date = self.history["last_training_date"]
             except:
                 logging.error("Could not fetch history.")
+            self.transformer_model = tf.keras.models.load_model(self.trained_trasnformer_path)
+            logging.info(f'Transfomer model loaded successfully..{type(self.transformer_model)}')
         except Exception as e:
-            logging.error(f'Error loading model: {e}')
+            logging.error(f'Error loading models: {e}')
 
     def loadTokenizer(self):
         try:
-            logging.info('Loading tokenizer...')
+            logging.info('Loading tokenizers...')
             with open(self.model_tokenizer_path, "r") as file:
                 tokenizer_data = json.load(file)
                 self.tokenizer = tokenizer_from_json(tokenizer_data)
-            logging.info('Tokenizer loaded successfully.')
+            logging.info('Intent tokenizer loaded successfully.')
+            with open(self.transformer_tokenizer_path, "r") as file:
+                tokenizer_data = json.load(file)
+                self.transformer_tokenizer = tokenizer_from_json(tokenizer_data)
+            logging.info('Transformer tokenizer loaded successfully')
         except Exception as e:
             logging.error(f'Error loading tokenizer: {e}')
 
@@ -90,6 +100,16 @@ class Tensor_Model:
             logging.error(f'Error loading responses: {e}')
             self.responses = {}
 
+    def generate_response(self, user_input):
+        transformer_model = self.transformer_model
+        tokenizer = self.transformer_tokenizer
+        sequence = tokenizer.texts_to_sequences([user_input])
+        padded_sequence = pad_sequences(sequence, maxlen=20, padding="post")
+        prediction = transformer_model.predict(padded_sequence)
+        response_tokens = np.argmax(prediction, axis=-1)[0]
+        generated_response = " ".join([tokenizer.index_word.get(token, "") for token in response_tokens if token > 0])
+        return generated_response if generated_response.strip() else "I'm not sure how to respond."
+
     def checkTrainingDate(self):
         logging.info("Checking training date...")
         try:
@@ -119,17 +139,35 @@ class Tensor_Model:
             intent_name = self.label_encoder.inverse_transform([intent_index])[0]
             confidence = float(f'{probabilities[intent_index]:.2f}')
             logging.info(f'Predicted intent: {intent_name} (Confidence: {confidence})')
-            if confidence < 0.12:
-                return {"response": "I'm not sure. Can you rephrase?", "intent": "unknown", "confidence": confidence, "model": "TensorFlow", "status": "success", "model_upToDate": self.checkTrainingDate()}
-            
-            response = np.random.choice(self.responses.get(intent_name, ["Sorry, I didn't understand that."]))
+
+            # if confidence < 0.6:
+            #     generated_response = self.generate_response(self.transformer_model, self.tokenizer, text, self.max_length)
+            #     return {
+            #         "response": generated_response, 
+            #         "intent": "unknown", 
+            #         "confidence": confidence, 
+            #         "model": "TensorFlow + Transformer",
+            #         "status": "success", 
+            #         "model_upToDate": self.checkTrainingDate()
+            #     }
+            response = np.random.choice(self.responses.get(intent_name, []))
+            if not response or confidence < 0.6:
+                response = self.generate_response(text)
             logging.info(f'Response: {response}')
-            
-            return {"status": "success", "reply": response, "model": "TensorFlow", "predicted_intent": intent_name, "confidence_score": confidence, "model_upToDate": self.checkTrainingDate()}
+            return {
+                "status": "success", 
+                "reply": response, 
+                "model": "TensorFlow + Transformer", 
+                "predicted_intent": intent_name, 
+                "confidence_score": confidence, 
+                "model_upToDate": self.checkTrainingDate()
+            }
 
         except Exception as e:
-            logging.critical(f'Error during prediction: {e}')
-            return {"status": "failed", "error": "Sorry, something went wrong during prediction", "model": "TensorFlow"}
+            line_no = traceback.extract_tb(e.__traceback__)[-1].lineno
+            logging.critical(f'{e}, line number: {line_no}')
+            logging.critical(traceback.extract_tb(e.__traceback__))
+            return {"status": "failed", "error": f"Sorry, something went wrong during prediction, error came at line number {line_no}", "model": "TensorFlow/Transformer"}
 
 # chatbot = Tensor_Model()
 # print(f'\npredition 1: {chatbot.predictIntent("hi")}\n')
