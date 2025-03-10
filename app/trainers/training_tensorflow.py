@@ -1,7 +1,7 @@
 import json
 import nltk
 import logging
-import os, pickle
+import os, pickle, datetime
 import numpy as np
 import tensorflow as tf
 from nltk.tokenize import word_tokenize
@@ -10,10 +10,6 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
 
 nltk.download("punkt")
-# logging.basicConfig(filename="training.log",filemode="a",level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
-# logger = logging.getLogger()
-# for handler in logger.handlers:
-    # handler.flush()
 
 
 class Train_Tensor:
@@ -30,8 +26,9 @@ class Train_Tensor:
         self.tokenizer = None
         self.max_length = 0
         self.label_encoder = None
-        self.log_path = os.path.join(os.path.dirname(__file__), 'training.log')
-        self.intents_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'intents2.json')
+        self.total_epochs = 0
+        self.history_path = os.path.join(os.path.dirname(__file__), '..', 'history', 'training_history.pkl')
+        self.intents_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'tensor_intents.json')
         self.trained_model_path = os.path.join(os.path.dirname(__file__), '..', 'models', 'custom_tensor.keras')
         self.model_tokenizer_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'tokenizer.json')
         self.data = self.loadData()
@@ -39,6 +36,10 @@ class Train_Tensor:
         self.max_len_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'max_length.json')
 
     def setupLogging(self):
+        self.log_messages.clear()
+        logger = logging.getLogger()
+        logger.handlers = []
+
         class ListLogger(logging.Handler):
             def emit(handler_self, record):
                 formatted_record = handler_self.format(record)
@@ -46,8 +47,8 @@ class Train_Tensor:
 
         list_handler = ListLogger()
         list_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
-        logging.getLogger().addHandler(list_handler)
-        logging.getLogger().setLevel(logging.INFO)
+        logger.addHandler(list_handler)
+        logger.setLevel(logging.INFO)
 
     def loadData(self):
         try:
@@ -99,29 +100,49 @@ class Train_Tensor:
             f"Vocabulary Size: {self.vocab_size}, Max Length: {self.max_length}, Classes: {self.num_classes}")
         logging.info("Tokenization complete.")
 
+    def updateHistory(self, n, history):
+        try:
+            logging.info('Updating training history...')
+            if os.path.exists(self.history_path) and os.path.getsize(self.history_path) > 0:
+                with open(self.history_path, "rb") as file:
+                    history_data = pickle.load(file)
+                    self.total_epochs = history_data.get("total_epochs", 0)
+            else:
+                logging.info("History file is empty or doesn't exist. Creating a new history record...")
+                self.total_epochs = 0
+
+            training_info = {
+                "date": datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"), 
+                "last_epoch_count": n,
+                "total_epochs": self.total_epochs + n,
+                "history": history.history
+            }
+            with open(self.history_path, "wb") as file:
+                pickle.dump(training_info, file)
+
+            logging.info('History updated successfully.')
+
+        except Exception as e:
+            logging.error(f'Unexpected exception occurred: {str(e)}')
+
     def createModel(self, n, lstm=128):
         try:
             try:
                 self.setupLogging()
+                logging.info('Starting process...')
             except:
                 self.log_messages = "error while setting up logs"
             self.extractData()
             self.encodeLabels()
             self.tokenize()
             logging.info('Training...')
-            # model = tf.keras.Sequential([
-            #     tf.keras.layers.Embedding(self.vocab_size, lstm, input_length=self.max_length),
-            #     tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm, return_sequences=True, dropout=drop)),
-            #     tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm, dropout=drop)),
-            #     tf.keras.layers.Dense(lstm, activation="relu"),
-            #     tf.keras.layers.Dense(self.num_classes, activation="softmax")
-            # ])
+            # transformer
             model = tf.keras.Sequential([
                 tf.keras.layers.Embedding(self.vocab_size, lstm, input_length=self.max_length),  
                 tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm, return_sequences=True, dropout=0.4, recurrent_dropout=0.2)),  
                 tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm, dropout=0.4, recurrent_dropout=0.2)),  
                 tf.keras.layers.Dense(128, activation="relu"),
-                tf.keras.layers.Dropout(0.4),  # 🔥 Forces model to generalize
+                tf.keras.layers.Dropout(0.4),
                 tf.keras.layers.Dense(self.num_classes, activation="softmax")
             ])
             model.compile(loss="sparse_categorical_crossentropy",optimizer="adam", metrics=["accuracy"])
@@ -130,15 +151,20 @@ class Train_Tensor:
             logging.info(f"Final Training Loss: {history.history['loss'][-1] * 100:.4f}%")
             logging.info(f"Final Training Accuracy: {history.history['accuracy'][-1] * 100:.4f}%")
 
+            logging.info('Updating tokens...')
             with open(self.model_tokenizer_path, "w") as file:
                 json.dump(self.tokenizer.to_json(), file)
 
+            logging.info('Updating labels...')
             with open(self.pickle_path, 'wb') as file:
                 pickle.dump(self.label_encoder, file)
 
+            logging.info('Updating max length...')
             with open(self.max_len_path, "w") as file:
                 json.dump({"max_length": self.max_length}, file)
             logging.info('Training complete.')
+            self.updateHistory(n, history)
+            logging.info('Process complete.')
             return {"status": "success", "epochs": n, "logs": self.log_messages}
         except Exception as e:
             logging.critical(f'{e}')

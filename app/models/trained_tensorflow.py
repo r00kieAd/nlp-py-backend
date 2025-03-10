@@ -7,15 +7,15 @@ import tensorflow as tf
 from tensorflow.keras.preprocessing.text import tokenizer_from_json
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
+from history import get_history
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 class Tensor_Model:
     def __init__(self):
         self.trained_model_path = os.path.join(os.path.dirname(__file__), 'custom_tensor.keras')
-        print('model path: ', self.trained_model_path)
         self.model_tokenizer_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'tokenizer.json')
-        self.responses_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'intents2.json')
+        self.responses_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'tensor_intents.json')
         self.label_encoder_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'label_encoder.pkl')
         self.max_length_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'max_length.json')
         self.model = None
@@ -23,6 +23,9 @@ class Tensor_Model:
         self.label_encoder = None
         self.max_length = 20
         self.responses = {}
+        self.get_history = get_history.Get_History()
+        self.history = None
+        self.training_date = 'undefined'
         self.loadModel()
         self.loadTokenizer()
         self.loadLabelEncoder()
@@ -34,6 +37,14 @@ class Tensor_Model:
             logging.info('Loading trained model...')
             self.model = tf.keras.models.load_model(self.trained_model_path)
             logging.info(f'Model loaded successfully..{type(self.model)}')
+            try:
+                self.history = self.get_history.getData()
+                if self.history["status"] == "failed":
+                    logging.error("Could not fetch history.")
+                    return
+                self.training_date = self.history["last_training_date"]
+            except:
+                logging.error("Could not fetch history.")
         except Exception as e:
             logging.error(f'Error loading model: {e}')
 
@@ -79,6 +90,21 @@ class Tensor_Model:
             logging.error(f'Error loading responses: {e}')
             self.responses = {}
 
+    def checkTrainingDate(self):
+        logging.info("Checking training date...")
+        try:
+            data = self.get_history.getData()
+            if data["status"] == "success":
+                curr_date = data["last_training_date"]
+                if curr_date == self.training_date:
+                    logging.info("Check complete.")
+                    return True
+                logging.info("Check complete.")
+                return False
+        except Exception as e:
+            logging.error(f'Error while getting history data: {str(e)}')
+            return None
+
     def predictIntent(self, text):
         try:
             logging.info('Processing input...')
@@ -94,11 +120,12 @@ class Tensor_Model:
             confidence = float(f'{probabilities[intent_index]:.2f}')
             logging.info(f'Predicted intent: {intent_name} (Confidence: {confidence})')
             if confidence < 0.12:
-                return {"response": "I'm not sure. Can you rephrase?", "intent": "unknown", "confidence": confidence, "model": "TensorFlow", "status": "success"}
+                return {"response": "I'm not sure. Can you rephrase?", "intent": "unknown", "confidence": confidence, "model": "TensorFlow", "status": "success", "model_upToDate": self.checkTrainingDate()}
             
             response = np.random.choice(self.responses.get(intent_name, ["Sorry, I didn't understand that."]))
             logging.info(f'Response: {response}')
-            return {"status": "success", "reply": response, "model": "TensorFlow", "predicted_intent": intent_name, "confidence_score": confidence}
+            
+            return {"status": "success", "reply": response, "model": "TensorFlow", "predicted_intent": intent_name, "confidence_score": confidence, "model_upToDate": self.checkTrainingDate()}
 
         except Exception as e:
             logging.critical(f'Error during prediction: {e}')
