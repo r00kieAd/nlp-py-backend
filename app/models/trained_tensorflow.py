@@ -139,19 +139,8 @@ class Tensor_Model:
             intent_name = self.label_encoder.inverse_transform([intent_index])[0]
             confidence = float(f'{probabilities[intent_index]:.2f}')
             logging.info(f'Predicted intent: {intent_name} (Confidence: {confidence})')
-
-            # if confidence < 0.6:
-            #     generated_response = self.generate_response(self.transformer_model, self.tokenizer, text, self.max_length)
-            #     return {
-            #         "response": generated_response, 
-            #         "intent": "unknown", 
-            #         "confidence": confidence, 
-            #         "model": "TensorFlow + Transformer",
-            #         "status": "success", 
-            #         "model_upToDate": self.checkTrainingDate()
-            #     }
             response = np.random.choice(self.responses.get(intent_name, []))
-            if not response or confidence < 0.6:
+            if not response or confidence < 0.12:
                 response = self.generate_response(text)
             logging.info(f'Response: {response}')
             return {

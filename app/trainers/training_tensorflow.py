@@ -4,11 +4,13 @@ import logging, traceback
 import os, pickle, datetime
 import numpy as np
 import tensorflow as tf
+from sklearn.utils.class_weight import compute_class_weight
 from nltk.tokenize import word_tokenize
-from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.text import Tokenizer, text_to_word_sequence
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.preprocessing import LabelEncoder
-from tensorflow.keras.layers import Input, Embedding, MultiHeadAttention, Dense, LayerNormalization, Dropout
+from tensorflow.keras.layers import Input, Embedding, MultiHeadAttention, Dense, LayerNormalization, Dropout, BatchNormalization
+from tensorflow.keras.optimizers.schedules import ExponentialDecay
 from tensorflow.keras.models import Model
 
 nltk.download("punkt")
@@ -33,6 +35,7 @@ class Train_Tensor:
         self.total_epochs = 0
         self.input_texts = []
         self.output_texts = []
+        self.class_weights = None
         self.cornell_corpus_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'cornell_corpus.json')
         self.history_path = os.path.join(os.path.dirname(__file__), '..', 'history', 'training_history.pkl')
         self.intents_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'tensor_intents.json')
@@ -92,13 +95,17 @@ class Train_Tensor:
         self.label_encoder = LabelEncoder()
         self.encoded_labels = self.label_encoder.fit_transform(self.labels)
         label_map = dict(zip(self.label_encoder.classes_, range(len(self.label_encoder.classes_))))
-        logging.info(f"Label Mapping: {label_map}")
+        class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(self.encoded_labels), y=self.encoded_labels)
+        self.class_weights = dict(enumerate(class_weights))
+        # logging.info(f"Label Mapping: {label_map}")
+        logging.info(f"Class Weights: {self.class_weights}")
         logging.info("Encoding complete.")
 
     def tokenize(self, model_classification):
         self.tokenizer = Tokenizer(num_words=5000, oov_token="<OOV>")
         if model_classification == 0:
             logging.info("Tokenizing intent data...")
+            self.sentences = [" ".join(text_to_word_sequence(sentence)) for sentence in self.sentences]
             self.tokenizer.fit_on_texts(self.sentences)
             word_index = self.tokenizer.word_index
             sequences = self.tokenizer.texts_to_sequences(self.sentences)
@@ -106,8 +113,7 @@ class Train_Tensor:
             self.vocab_size = len(word_index) + 1
             self.max_length = self.padded_sequences.shape[1]
             self.num_classes = len(set(self.labels))
-            logging.info(
-                f"Vocabulary Size: {self.vocab_size}, Max Length: {self.max_length}, Classes: {self.num_classes}")
+            logging.info(f"Vocabulary Size: {self.vocab_size}, Max Length: {self.max_length}, Classes: {self.num_classes}")
             logging.info("Tokenization of intents complete.")
         else:
             logging.info("Tokenizing cornell corpus...")
@@ -143,21 +149,35 @@ class Train_Tensor:
             logging.error(f"Error loading Cornell data: {e}")
 
     def buildTransformerModel(self, vocab_size=5000, d_model=128, num_heads=4, ff_dim=256, max_len=20):
-        logging.info("Building transformer model for response generation...")
+        logging.info("Building improved transformer model...")
     
         inputs = Input(shape=(max_len,))
-        embedding = Embedding(vocab_size, d_model)(inputs)
+        embedding = Embedding(vocab_size, d_model, mask_zero=True)(inputs)  # ✅ Mask padding tokens
+
+        # Multi-Head Attention with Dropout
         attention = MultiHeadAttention(num_heads=num_heads, key_dim=d_model)(embedding, embedding, embedding)
-        attention = Dense(d_model)(attention)
-        norm1 = LayerNormalization(epsilon=1e-6)(embedding + attention)
+        attention = Dropout(0.1)(attention)  # ✅ Add dropout
+        norm1 = LayerNormalization(epsilon=1e-6)(attention + embedding)  
+
+        # Feed-Forward Network (FFN)
         dense_ff = Dense(ff_dim, activation="relu")(norm1)
-        dense_ff = Dense(d_model)(dense_ff)
-        norm2 = LayerNormalization(epsilon=1e-6)(norm1 + dense_ff)
+        dense_ff = Dropout(0.1)(dense_ff)  # ✅ Add dropout
+        dense_ff = Dense(d_model)(dense_ff)  # Match embedding size
+        norm2 = LayerNormalization(epsilon=1e-6)(dense_ff + norm1)  
+
+        # Output Layer
         outputs = Dense(vocab_size, activation="softmax")(norm2)
+
         transformer = Model(inputs, outputs)
-        transformer.compile(optimizer="adam", loss="sparse_categorical_crossentropy", metrics=['accuracy'])
+
+        # ✅ Learning rate scheduling
+        lr_schedule = ExponentialDecay(initial_learning_rate=0.001, decay_steps=10000, decay_rate=0.9)
+        optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
+
+        transformer.compile(optimizer=optimizer, loss="sparse_categorical_crossentropy", metrics=["accuracy"])
         self.transformer_model = transformer
-        logging.info("Transformer model built successfully.")
+
+        logging.info("Transformer model improved and built successfully.")
 
 
     def trainTransformer(self, epochs, batch_size=32):
@@ -177,8 +197,8 @@ class Train_Tensor:
             epochs=epochs, 
             batch_size=batch_size
         )
-        logging.info(f"Final transformer training loss: {history.history['loss'][-1]:.4f}")
-        logging.info(f"Final transformer training accuracy: {history.history['accuracy'][-1]:.4f}")
+        logging.info(f"Final transformer training loss: {history.history['loss'][-1] * 100:.4f}")
+        logging.info(f"Final transformer training accuracy: {history.history['accuracy'][-1] * 100:.4f}")
         self.transformer_model.save(self.transformer_path)
         with open(self.t_tokenizer_path, "w") as file:
             json.dump(self.tokenizer.to_json(), file)
@@ -218,21 +238,22 @@ class Train_Tensor:
                 logging.info('Starting process...')
             except:
                 self.log_messages = "error while setting up logs"
-            
+            t_history = self.trainTransformer(n)
             self.extractData()
             self.encodeLabels()
             self.tokenize(0)
+            return {"status": "success", "epochs": n, "logs": self.log_messages}
             logging.info('Training intent model...')
             model = tf.keras.Sequential([
                 tf.keras.layers.Embedding(self.vocab_size, lstm, input_length=self.max_length),  
-                tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm, return_sequences=True, dropout=0.4, recurrent_dropout=0.2)),  
-                tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm, dropout=0.4, recurrent_dropout=0.2)),  
+                tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm, return_sequences=True, dropout=0.3, recurrent_dropout=0.2)),  
+                tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(lstm, dropout=0.3, recurrent_dropout=0.2)),  
                 tf.keras.layers.Dense(128, activation="relu"),
                 tf.keras.layers.Dropout(0.4),
                 tf.keras.layers.Dense(self.num_classes, activation="softmax")
             ])
             model.compile(loss="sparse_categorical_crossentropy",optimizer="adam", metrics=["accuracy"])
-            history = model.fit(self.padded_sequences, np.array(self.encoded_labels), epochs=n, batch_size=8)
+            history = model.fit(self.padded_sequences, np.array(self.encoded_labels), epochs=n, batch_size=8, class_weight=self.class_weights)
             model.save(self.trained_model_path)
             logging.info(f"Final Training Loss: {history.history['loss'][-1] * 100:.4f}%")
             logging.info(f"Final Training Accuracy: {history.history['accuracy'][-1] * 100:.4f}%")
@@ -251,6 +272,7 @@ class Train_Tensor:
             logging.info('Intent training complete.')
             t_history = self.trainTransformer(n)
             self.updateHistory(n, history, t_history)
+            self.updateHistory(n, history, None)
             logging.info('Process complete.')
             return {"status": "success", "epochs": n, "logs": self.log_messages}
         except Exception as e:
