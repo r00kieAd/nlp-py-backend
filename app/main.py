@@ -84,10 +84,14 @@ class App:
 
         @self.app.route('/tensor_training_history', methods=['GET'])
         def getTensorHistory():
-            data = self.get_history.getData()
-            if data["status"] == "failed":
-                return jsonify(data), 500
-            return jsonify(data)
+            try:
+                data = self.get_history.getData()
+                if data["status"] == "failed":
+                    return jsonify(data), 500
+                return jsonify(data)
+            except Exception as e:
+                print('Exception in get tensor history', e)
+                return jsonify({"status": "failed", "error": "unable to get history"}), 500
 
     def run(self):
         self.app.run(debug=True)
