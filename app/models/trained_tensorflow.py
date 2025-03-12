@@ -100,16 +100,50 @@ class Tensor_Model:
             logging.error(f'Error loading responses: {e}')
             self.responses = {}
 
-    def generate_response(self, user_input):
+    def top_p_top_k_sampling(self, logits, top_p, top_k, temperature):
+        logits = logits / temperature
+        probs = tf.nn.softmax(logits).numpy()
+        if top_k > 0:
+            top_k_indices = np.argsort(probs)[-top_k:]
+            top_k_probs = probs[top_k_indices]
+            filtered_probs = np.zeros_like(probs)
+            filtered_probs[top_k_indices] = top_k_probs
+            probs = filtered_probs / np.sum(filtered_probs) 
+        if top_p < 1.0:
+            sorted_indices = np.argsort(probs)[::-1]
+            sorted_probs = probs[sorted_indices]
+            cumulative_probs = np.cumsum(sorted_probs)
+
+            cutoff_index = np.where(cumulative_probs > top_p)[0][0] + 1
+            top_p_indices = sorted_indices[:cutoff_index]
+
+            filtered_probs = np.zeros_like(probs)
+            filtered_probs[top_p_indices] = probs[top_p_indices]
+            probs = filtered_probs / np.sum(filtered_probs)  # Normalize
+
+        next_token = np.random.choice(len(probs), p=probs)
+        return next_token
+
+
+    def generate_response(self, user_input, top_p=0.7, top_k=10, temperature=0.8):
         transformer_model = self.transformer_model
         tokenizer = self.transformer_tokenizer
         sequence = tokenizer.texts_to_sequences([user_input])
         padded_sequence = pad_sequences(sequence, maxlen=20, padding="post")
-        prediction = transformer_model.predict(padded_sequence)
-        response_tokens = np.argmax(prediction, axis=-1)[0]
-        generated_response = " ".join([tokenizer.index_word.get(token, "") for token in response_tokens if token > 0])
-        return generated_response if generated_response.strip() else "I'm not sure how to respond."
+        generated_tokens = []
 
+        for _ in range(20):
+            logits = transformer_model.predict(padded_sequence)[0, -1]
+            next_token = self.top_p_top_k_sampling(logits, top_p, top_k, temperature)
+            generated_tokens.append(next_token)
+            padded_sequence = np.concatenate([padded_sequence[:, 1:], np.array([[next_token]])], axis=1)
+            if next_token == tokenizer.word_index.get("<eos>", -1):
+                break
+
+        generated_response = " ".join([tokenizer.index_word.get(token, "") for token in generated_tokens if token > 0])
+
+        return generated_response if generated_response.strip() else "I'm not sure how to respond."
+        
     def checkTrainingDate(self):
         logging.info("Checking training date...")
         try:
@@ -140,13 +174,13 @@ class Tensor_Model:
             confidence = float(f'{probabilities[intent_index]:.2f}')
             logging.info(f'Predicted intent: {intent_name} (Confidence: {confidence})')
             response = np.random.choice(self.responses.get(intent_name, []))
-            if not response or confidence < 0.12:
+            if not response or confidence < 0.16:
                 response = self.generate_response(text)
             logging.info(f'Response: {response}')
             return {
                 "status": "success", 
                 "reply": response, 
-                "model": "TensorFlow + Transformer", 
+                "model": "TensorFlow", 
                 "predicted_intent": intent_name, 
                 "confidence_score": confidence, 
                 "model_upToDate": self.checkTrainingDate()
