@@ -32,5 +32,5 @@ class Static_Model:
             print(match_id, start, end)
             intent = self.nlp.vocab.strings[match_id]
             print(intent)
-            return random.choice(self.responses[intent])
-        return random.choice(self.responses["unknown"])
+            return {"status": "success", "reply": random.choice(self.responses[intent])}
+        return {"status": "success", "reply": random.choice(self.responses["unknown"])}
