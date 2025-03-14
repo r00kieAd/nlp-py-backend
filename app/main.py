@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request
-from models import static_spacy, trained_spacy, trained_tensorflow
-from trainers import training_spacy, training_tensorflow
-from feedback import collect_feedback
-from history import get_history
-import json, os
+from app.models import static_spacy, trained_spacy, trained_tensorflow
+from app.trainers import training_spacy, training_tensorflow
+from app.feedback import collect_feedback
+from app.history import get_history
+import json, os, logging
+
+logging.basicConfig(level=logging.ERROR)
 
 class App:
     def __init__(self):
@@ -43,32 +45,41 @@ class App:
                     return jsonify(response), 500
                 return jsonify(response)
             except Exception as e:
+                logging.error(f"Error while getting reply...", exc_info=True)
                 return jsonify({"error": f"error while getting reply {str(e)}"}), 500
 
         @self.app.route('/collect_feedback', methods=['PUT'])
         def collectFeedback():
-            req_data = request.get_json()
-            example = req_data["example"]
-            intent = req_data["intent"]
-            responses = req_data["responses"]
-            model = req_data["model"]
-            if model == 0:
-                return jsonify({"status": "failed", "error": "can't collect feedback for static model", "suggestion": "try 1 for spacy, 2 for tensor"}), 400
-            else:
-                resp = self.collect_feedback.saveFeedback(intent, example, responses, model)
-            if resp['status'] == "failed":
-                return jsonify(resp), 500
-            return jsonify(resp)
+            try:
+                req_data = request.get_json()
+                example = req_data["example"]
+                intent = req_data["intent"]
+                responses = req_data["responses"]
+                model = req_data["model"]
+                if model == 0:
+                    return jsonify({"status": "failed", "error": "can't collect feedback for static model", "suggestion": "try 1 for spacy, 2 for tensor"}), 400
+                else:
+                    resp = self.collect_feedback.saveFeedback(intent, example, responses, model)
+                if resp['status'] == "failed":
+                    return jsonify(resp), 500
+                return jsonify(resp)
+            except Exception as e:
+                logging.error("Error while collecting feedback...", exc_info=True)
+                return jsonify({"status": "failed", "error": str(e)}), 500
         
         @self.app.route('/train_spacy', methods=['GET'])
         def trainSpacyFunction():
-            epochs = request.args.get('n', default=50, type=int)
             try:
-                result = self.train_spacy.train_model(epochs)
-                if result['status'] == "failed":
-                    return jsonify(result), 500
-                return jsonify(result)
+                epochs = request.args.get('n', default=50, type=int)
+                try:
+                    result = self.train_spacy.train_model(epochs)
+                    if result['status'] == "failed":
+                        return jsonify(result), 500
+                    return jsonify(result)
+                except Exception as e:
+                    return jsonify({"status": "failed", "error": str(e)}), 500
             except Exception as e:
+                logging.error("Error while training spacy...", exc_info=True)
                 return jsonify({"status": "failed", "error": str(e)}), 500
 
         @self.app.route('/train_tensor', methods=['GET'])
@@ -80,6 +91,7 @@ class App:
                     return jsonify(result), 500
                 return jsonify(result)
             except Exception as e:
+                logging.error("Error while training tensor...", exc_info=True)
                 return jsonify({"status": "failed", "error": str(e)}), 500
 
         @self.app.route('/tensor_training_history', methods=['GET'])
@@ -90,12 +102,22 @@ class App:
                     return jsonify(data), 500
                 return jsonify(data)
             except Exception as e:
-                print('Exception in get tensor history', e)
+                logging.error('Exception in get tensor history', exc_info=True)
                 return jsonify({"status": "failed", "error": "unable to get history"}), 500
 
-    def run(self):
-        self.app.run(debug=True)
+    # def run(self):
+    #     env = os.getenv("FLASK_ENV", "dev")
+    #     if env == "prod":
+    #         logging.info("Running in production...")
+    #         self.app.run(host="0.0.0.0", port=8000)
+    #     else:
+    #         logging.info("Running in development...")
+    #         self.app.run(debug=True)
+    #     logging.warning("App stopped.")
 
 if __name__ == '__main__':
     app_instance = App()
+    # app = app_instance.app
     app_instance.run()
+
+app = App().app
