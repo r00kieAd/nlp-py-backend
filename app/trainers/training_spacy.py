@@ -1,6 +1,6 @@
 import spacy, os, json, logging, random
 from spacy.pipeline.textcat import Config, single_label_cnn_config
-from trainers import generate_sentences, generate_responses
+from app.trainers import generate_sentences, generate_responses
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
