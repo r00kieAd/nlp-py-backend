@@ -21,13 +21,13 @@ class Get_History():
                 history_data = pickle.load(file)
                 self.last_epoch1 = history_data["last_epoch_count"]
                 self.total_epochs1 = history_data["total_epochs"]
-                # self.last_epoch2 = history_data["last_transformer_epoch"]
-                # self.total_epochs2 = history_data["total_transformer_epochs"]
+                self.last_epoch2 = history_data["last_transformer_epoch"]
+                self.total_epochs2 = history_data["total_transformer_epochs"]
                 self.date = history_data["date"]
                 self.accuracy1 = f'{history_data["history"]["accuracy"][-1] * 100:.4f}%'
                 self.loss1 = f'{history_data["history"]["loss"][-1] * 100:.4f}%'
-                # self.accuracy2 = f'{history_data["transformer_history"]["accuracy"][-1] * 100:.4f}%'
-                # self.loss2 = f'{history_data["transformer_history"]["loss"][-1] * 100:.4f}%'
+                self.accuracy2 = f'{history_data["transformer_history"]["accuracy"][-1] * 100:.4f}%'
+                self.loss2 = f'{history_data["transformer_history"]["loss"][-1] * 100:.4f}%'
             return True
         except Exception as e:
             line_no = traceback.extract_tb(e.__traceback__)[-1].lineno

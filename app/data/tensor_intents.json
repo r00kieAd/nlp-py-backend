@@ -273,11 +273,14 @@
                 "what's new?",
                 "tell me the latest news",
                 "any updates?",
-                "what's happening in the world?"
+                "what's happening in the world?",
+                "News",
+                "News"
             ],
             "responses": [
                 "I don't have real-time news, but you can check a news website!",
-                "Stay informed by checking the latest headlines online!"
+                "Stay informed by checking the latest headlines online!",
+                "hmm...I am not connected to any source yet"
             ]
         },
         {
