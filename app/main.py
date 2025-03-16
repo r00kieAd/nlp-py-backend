@@ -36,7 +36,11 @@ class App:
                 if not msg:
                     return jsonify({"error": "Missing 'input' param"}), 400
                 if model == 2:
-                    response = self.tensor_model.predictIntent(msg)
+                    top_p = req_data["top_p"]
+                    top_k = req_data["top_k"]
+                    temp = req_data["temperature"]
+                    conf_thresh = req_data["confidence_threshold"]
+                    response = self.tensor_model.predictIntent(msg, top_p, top_k, temp, conf_thresh)
                 elif model == 1:
                     response = self.dynamic_model.dynamic_response(msg)
                 else:

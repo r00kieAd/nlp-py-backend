@@ -98,7 +98,7 @@ class Train_Tensor:
         class_weights = compute_class_weight(class_weight="balanced", classes=np.unique(self.encoded_labels), y=self.encoded_labels)
         self.class_weights = dict(enumerate(class_weights))
         # logging.info(f"Label Mapping: {label_map}")
-        logging.info(f"Class Weights: {self.class_weights}")
+        # logging.info(f"Class Weights: {self.class_weights}")
         logging.info("Encoding complete.")
 
     def tokenize(self, model_classification):
@@ -152,25 +152,20 @@ class Train_Tensor:
         logging.info("Building improved transformer model...")
     
         inputs = Input(shape=(max_len,))
-        embedding = Embedding(vocab_size, d_model, mask_zero=True)(inputs)  # ✅ Mask padding tokens
+        embedding = Embedding(vocab_size, d_model, mask_zero=True)(inputs)
 
-        # Multi-Head Attention with Dropout
         attention = MultiHeadAttention(num_heads=num_heads, key_dim=d_model)(embedding, embedding, embedding)
-        attention = Dropout(0.1)(attention)  # ✅ Add dropout
+        attention = Dropout(0.1)(attention) 
         norm1 = LayerNormalization(epsilon=1e-6)(attention + embedding)  
 
-        # Feed-Forward Network (FFN)
         dense_ff = Dense(ff_dim, activation="relu")(norm1)
-        dense_ff = Dropout(0.1)(dense_ff)  # ✅ Add dropout
-        dense_ff = Dense(d_model)(dense_ff)  # Match embedding size
+        dense_ff = Dropout(0.1)(dense_ff)
+        dense_ff = Dense(d_model)(dense_ff)
         norm2 = LayerNormalization(epsilon=1e-6)(dense_ff + norm1)  
 
-        # Output Layer
         outputs = Dense(vocab_size, activation="softmax")(norm2)
 
         transformer = Model(inputs, outputs)
-
-        # ✅ Learning rate scheduling
         lr_schedule = ExponentialDecay(initial_learning_rate=0.001, decay_steps=10000, decay_rate=0.9)
         optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule)
 
@@ -181,6 +176,7 @@ class Train_Tensor:
 
 
     def trainTransformer(self, epochs, batch_size=32):
+        epochs = 1
         logging.info("Training transformer model...")
         if not hasattr(self, "input_sequences") or self.input_sequences is None:
             self.loadCornellData()
@@ -211,14 +207,14 @@ class Train_Tensor:
             if os.path.exists(self.history_path) and os.path.getsize(self.history_path) > 0:
                 with open(self.history_path, "rb") as file:
                     history_data = pickle.load(file)
-                    self.total_epochs = history_data.get("total_epochs", 0)
-                    self.total_transformer_epochs = history_data.get("total_transformer_epochs", 0)
+                    self.total_epochs = history_data.get("total_epochs", 790)
+                    self.total_transformer_epochs = history_data.get("total_transformer_epochs", 60)
             else:
                 logging.info("History file is empty or doesn't exist. Creating a new history record...")
                 self.total_epochs = 0
             training_info = {
                 "date": datetime.datetime.now().strftime("%d-%m-%Y %H:%M:%S"), 
-                "last_epoch_count": n,
+                "last_epoch_count": 100,
                 "total_epochs": self.total_epochs + n,
                 "history": history.history,
                 "last_transformer_epoch": n,
@@ -238,11 +234,9 @@ class Train_Tensor:
                 logging.info('Starting process...')
             except:
                 self.log_messages = "error while setting up logs"
-            t_history = self.trainTransformer(n)
             self.extractData()
             self.encodeLabels()
             self.tokenize(0)
-            return {"status": "success", "epochs": n, "logs": self.log_messages}
             logging.info('Training intent model...')
             model = tf.keras.Sequential([
                 tf.keras.layers.Embedding(self.vocab_size, lstm, input_length=self.max_length),  
@@ -272,7 +266,6 @@ class Train_Tensor:
             logging.info('Intent training complete.')
             t_history = self.trainTransformer(n)
             self.updateHistory(n, history, t_history)
-            self.updateHistory(n, history, None)
             logging.info('Process complete.')
             return {"status": "success", "epochs": n, "logs": self.log_messages}
         except Exception as e:

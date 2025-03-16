@@ -30,6 +30,9 @@ class Tensor_Model:
         self.get_history = get_history.Get_History()
         self.history = None
         self.training_date = 'undefined'
+        self.top_p = 0
+        self.top_k = 0
+        self.temperature = 0
         self.loadModel()
         self.loadTokenizer()
         self.loadLabelEncoder()
@@ -125,7 +128,7 @@ class Tensor_Model:
         return next_token
 
 
-    def generate_response(self, user_input, top_p=0.7, top_k=10, temperature=0.8):
+    def generate_response(self, user_input):
         transformer_model = self.transformer_model
         tokenizer = self.transformer_tokenizer
         sequence = tokenizer.texts_to_sequences([user_input])
@@ -134,7 +137,7 @@ class Tensor_Model:
 
         for _ in range(20):
             logits = transformer_model.predict(padded_sequence)[0, -1]
-            next_token = self.top_p_top_k_sampling(logits, top_p, top_k, temperature)
+            next_token = self.top_p_top_k_sampling(logits, self.top_p, self.top_k, self.temperature)
             generated_tokens.append(next_token)
             padded_sequence = np.concatenate([padded_sequence[:, 1:], np.array([[next_token]])], axis=1)
             if next_token == tokenizer.word_index.get("<eos>", -1):
@@ -159,9 +162,12 @@ class Tensor_Model:
             logging.error(f'Error while getting history data: {str(e)}')
             return None
 
-    def predictIntent(self, text):
+    def predictIntent(self, text, top_p, top_k, temperature, confidence_threshold):
         try:
             logging.info('Processing input...')
+            self.top_p = top_p
+            self.top_k = top_k
+            self.temperature = temperature
             sequence = self.tokenizer.texts_to_sequences([text])
             padded = pad_sequences(sequence, maxlen=self.max_length, padding="post")
 
@@ -174,7 +180,7 @@ class Tensor_Model:
             confidence = float(f'{probabilities[intent_index]:.2f}')
             logging.info(f'Predicted intent: {intent_name} (Confidence: {confidence})')
             response = np.random.choice(self.responses.get(intent_name, []))
-            if not response or confidence < 0.16:
+            if not response or confidence < confidence_threshold:
                 response = self.generate_response(text)
             logging.info(f'Response: {response}')
             return {
