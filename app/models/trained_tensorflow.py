@@ -103,50 +103,39 @@ class Tensor_Model:
             logging.error(f'Error loading responses: {e}')
             self.responses = {}
 
-    def top_p_top_k_sampling(self, logits, top_p, top_k, temperature):
-        logits = logits / temperature
-        probs = tf.nn.softmax(logits).numpy()
-        if top_k > 0:
-            top_k_indices = np.argsort(probs)[-top_k:]
-            top_k_probs = probs[top_k_indices]
-            filtered_probs = np.zeros_like(probs)
-            filtered_probs[top_k_indices] = top_k_probs
-            probs = filtered_probs / np.sum(filtered_probs) 
-        if top_p < 1.0:
-            sorted_indices = np.argsort(probs)[::-1]
-            sorted_probs = probs[sorted_indices]
-            cumulative_probs = np.cumsum(sorted_probs)
 
-            cutoff_index = np.where(cumulative_probs > top_p)[0][0] + 1
-            top_p_indices = sorted_indices[:cutoff_index]
+    def top_k_top_p_filtering(self, logits):
+        logits = logits / self.temperature 
+        probabilities = np.exp(logits) / np.sum(np.exp(logits))
 
-            filtered_probs = np.zeros_like(probs)
-            filtered_probs[top_p_indices] = probs[top_p_indices]
-            probs = filtered_probs / np.sum(filtered_probs)  # Normalize
+        sorted_indices = np.argsort(probabilities)[::-1]
+        sorted_probs = probabilities[sorted_indices]
 
-        next_token = np.random.choice(len(probs), p=probs)
-        return next_token
+        cumulative_probs = np.cumsum(sorted_probs)
+        cutoff_index = np.argmax(cumulative_probs >= self.top_p)
 
+        top_indices = sorted_indices[:max(cutoff_index + 1, self.top_k)]
+        top_probs = probabilities[top_indices]
+        top_probs /= np.sum(top_probs)
 
-    def generate_response(self, user_input):
-        transformer_model = self.transformer_model
-        tokenizer = self.transformer_tokenizer
-        sequence = tokenizer.texts_to_sequences([user_input])
-        padded_sequence = pad_sequences(sequence, maxlen=20, padding="post")
-        generated_tokens = []
+        chosen_index = np.random.choice(top_indices, p=top_probs)
+        return chosen_index
 
-        for _ in range(20):
-            logits = transformer_model.predict(padded_sequence)[0, -1]
-            next_token = self.top_p_top_k_sampling(logits, self.top_p, self.top_k, self.temperature)
-            generated_tokens.append(next_token)
-            padded_sequence = np.concatenate([padded_sequence[:, 1:], np.array([[next_token]])], axis=1)
-            if next_token == tokenizer.word_index.get("<eos>", -1):
-                break
+    def generate_response(self, input_text):
+        logging.info('Generating response from transformer...')
+        unsure = "I'm not sure how to respond."
+        sequence = self.transformer_tokenizer.texts_to_sequences([input_text])
+        if not sequence or not sequence[0]:  
+            return unsure
+        padded_sequence = pad_sequences(sequence, maxlen=20, padding="post", truncating="post")
+        predictions = self.transformer_model.predict(padded_sequence)
+        if len(predictions.shape) == 3:
+            predictions = predictions[0]
+        response_tokens = [self.top_k_top_p_filtering(pred) for pred in predictions]
+        generated_response = " ".join([self.transformer_tokenizer.index_word.get(token, "") for token in response_tokens if token > 0])
 
-        generated_response = " ".join([tokenizer.index_word.get(token, "") for token in generated_tokens if token > 0])
+        return generated_response if generated_response.strip() else unsure
 
-        return generated_response if generated_response.strip() else "I'm not sure how to respond."
-        
     def checkTrainingDate(self):
         logging.info("Checking training date...")
         try:
@@ -170,7 +159,6 @@ class Tensor_Model:
             self.temperature = temperature
             sequence = self.tokenizer.texts_to_sequences([text])
             padded = pad_sequences(sequence, maxlen=self.max_length, padding="post")
-
             logging.info('Predicting intent...')
             prediction = self.model.predict(padded)
             probabilities = tf.nn.softmax(prediction)[0].numpy()

@@ -36,18 +36,7 @@ class Get_History():
     def getData(self):
         try:
             data_loaded = self.loadData()
-            print(data_loaded)
             if isinstance(data_loaded, bool):
-                print({"status": "success",
-                    "last_training_date": self.date,
-                    "last_epoch_count": self.last_epoch1,
-                    "total_epochs": self.total_epochs1,
-                    "model_accuracy": self.accuracy1,
-                    "model_loss": self.loss1,
-                    "last_transformer_epochs": self.last_epoch2,
-                    "total_transformer_epochs": self.total_epochs2,
-                    "transformer_accuracy": self.accuracy2,
-                    "transformer_loss": self.loss2})
                 return {
                     "status": "success",
                     "last_training_date": self.date,

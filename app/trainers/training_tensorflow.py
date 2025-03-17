@@ -176,7 +176,7 @@ class Train_Tensor:
 
 
     def trainTransformer(self, epochs, batch_size=32):
-        epochs = 1
+        epochs = 20
         logging.info("Training transformer model...")
         if not hasattr(self, "input_sequences") or self.input_sequences is None:
             self.loadCornellData()
